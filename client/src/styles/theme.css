@@ -1,52 +1,52 @@
-/* Fellowship design tokens. Brand: deep teal #1F6F5C, amber #F2A541, sidebar #12302A, mention #E2574C. */
+/* Fellowship design tokens, matched to the landing page: red-orange #FA4C0D on warm near-black neutrals. */
 :root {
-  --brand: #1F6F5C;
-  --brand-strong: #185A4A;
-  --brand-soft: #E3F1EC;
+  --brand: #E8430A;
+  --brand-strong: #C93A08;
+  --brand-soft: #FDE9E1;
   --accent: #F2A541;
   --accent-soft: #FDF1DE;
   --mention: #E2574C;
   --mention-soft: #FCE7E5;
 
-  --sidebar-bg: #12302A;
-  --sidebar-fg: #C9DDD6;
+  --sidebar-bg: #141413;
+  --sidebar-fg: #B4AEAA;
   --sidebar-fg-strong: #FFFFFF;
-  --sidebar-hover: rgba(255, 255, 255, 0.07);
-  --sidebar-active: #1F6F5C;
-  --rail-bg: #0C221D;
-  --rail-tile: #2C4A43;
-  --rail-fg: #C9DDD6;
-  --topbar-bg: #0C221D;
-  --search-bg: rgba(255, 255, 255, 0.14);
-  --panel-border: #0C221D;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: rgba(250, 76, 13, 0.22);
+  --rail-bg: #0D0D0C;
+  --rail-tile: #262523;
+  --rail-fg: #A8A29E;
+  --topbar-bg: #0D0D0C;
+  --search-bg: rgba(255, 255, 255, 0.1);
+  --panel-border: #0D0D0C;
 
   --bg: #FFFFFF;
-  --bg-subtle: #F6F8F7;
-  --bg-hover: #F1F5F3;
+  --bg-subtle: #F7F5F4;
+  --bg-hover: #F1EEEC;
   --bg-elevated: #FFFFFF;
   --composer-bg: #FFFFFF;
-  --fg: #1B2421;
-  --fg-strong: #0F1513;
-  --fg-muted: #5F6E69;
-  --fg-faint: #8B9893;
-  --border: #E1E7E4;
-  --border-strong: #C9D3CF;
-  --link: #1A6B9A;
-  --highlight: #FFF6E3;
-  --pinned-bg: #FFF8EA;
-  --code-bg: #F2F4F3;
-  --code-fg: #B23C55;
-  --shadow: 0 8px 28px rgba(14, 35, 30, 0.16), 0 1px 3px rgba(14, 35, 30, 0.1);
-  --focus: 0 0 0 3px rgba(31, 111, 92, 0.3);
+  --fg: #1C1917;
+  --fg-strong: #0C0A09;
+  --fg-muted: #6B6461;
+  --fg-faint: #9A928E;
+  --border: #E7E3E0;
+  --border-strong: #D6D0CC;
+  --link: #C2410C;
+  --highlight: #FFF1E8;
+  --pinned-bg: #FFF6EE;
+  --code-bg: #F5F2F0;
+  --code-fg: #C2410C;
+  --shadow: 0 8px 28px rgba(12, 10, 9, 0.16), 0 1px 3px rgba(12, 10, 9, 0.1);
+  --focus: 0 0 0 3px rgba(232, 67, 10, 0.3);
 
-  --radius: 8px;
-  --radius-sm: 5px;
-  --font: 'Lato', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: 'Inter', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, Menlo, monospace;
   color-scheme: light;
 }
 
-/* Dark: neutral near-black surfaces (rail #16161A, sidebar #121416, main #1A1E22, composer #22262A). */
+/* Dark (default): the landing page's palette (page #121212, cards #1A1A17, rail #0D0D0C). */
 :root[data-theme='dark'] {
   --brand: #FA4C0D;
   --brand-strong: #FF6328;
@@ -56,35 +56,35 @@
   --mention: #E8675D;
   --mention-soft: #44231F;
 
-  --sidebar-bg: #121416;
-  --sidebar-fg: #B1B3B4;
-  --sidebar-fg-strong: #F3F5F7;
-  --sidebar-hover: rgba(255, 255, 255, 0.06);
-  --sidebar-active: #40444A;
-  --rail-bg: #16161A;
-  --rail-tile: #383C3F;
-  --rail-fg: #ABADAE;
-  --topbar-bg: #16161A;
-  --search-bg: #48484C;
-  --panel-border: #2A2E32;
+  --sidebar-bg: #141413;
+  --sidebar-fg: #B4AEAA;
+  --sidebar-fg-strong: #FAF7F5;
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(250, 76, 13, 0.18);
+  --rail-bg: #0D0D0C;
+  --rail-tile: #262523;
+  --rail-fg: #A8A29E;
+  --topbar-bg: #0D0D0C;
+  --search-bg: #1F1E1C;
+  --panel-border: #232220;
 
-  --bg: #1A1E22;
-  --bg-subtle: #1E2226;
-  --bg-hover: #22262A;
-  --bg-elevated: #22262A;
-  --composer-bg: #22262A;
-  --fg: #D4D8DB;
-  --fg-strong: #F8FAFB;
-  --fg-muted: #A0A2A6;
-  --fg-faint: #75787C;
-  --border: #2A2E32;
-  --border-strong: #3A3E43;
-  --link: #529CBA;
-  --highlight: #33301F;
-  --pinned-bg: #2A2618;
-  --code-bg: #22262A;
-  --code-fg: #E8912D;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --bg: #121212;
+  --bg-subtle: #161615;
+  --bg-hover: #1E1D1B;
+  --bg-elevated: #1A1A17;
+  --composer-bg: #1A1A17;
+  --fg: #E9E4E1;
+  --fg-strong: #FAF7F5;
+  --fg-muted: #A8A29E;
+  --fg-faint: #78716C;
+  --border: #262523;
+  --border-strong: #36332F;
+  --link: #FF7A45;
+  --highlight: #2A1C14;
+  --pinned-bg: #241A12;
+  --code-bg: #1A1A17;
+  --code-fg: #FF8A5B;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.4);
   --focus: 0 0 0 3px rgba(250, 76, 13, 0.35);
   color-scheme: dark;
 }

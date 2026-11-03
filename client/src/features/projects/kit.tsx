@@ -303,4 +303,4 @@ export function useFlash(ms = 1500): [string | null, (s: string) => void] {
 }
 
 export const SPACE_EMOJIS = ['🧭', '🚀', '💳', '🛠️', '📦', '🎯', '🧪', '📈', '🐞', '🌱', '🔒', '🎨', '📱', '🌐', '⚡', '🧩', '📚', '🏗️', '🤝', '🔥', '🛰️', '🧠', '🗂️', '🏁'];
-export const SPACE_COLORS = ['#6E5BD8', '#1F6F5C', '#2A7DE1', '#E2574C', '#F2A541', '#38B2AC', '#D53F8C', '#718096'];
+export const SPACE_COLORS = ['#6E5BD8', '#FA4C0D', '#2A7DE1', '#E2574C', '#F2A541', '#38B2AC', '#D53F8C', '#718096'];
