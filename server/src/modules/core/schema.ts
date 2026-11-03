@@ -107,4 +107,23 @@ export const coreMigrations: string[] = [
     PRIMARY KEY (user_id, message_id)
   );
   `,
+  // 1: email verification. Demo seed users and bots are grandfathered in as verified.
+  `
+  ALTER TABLE users ADD COLUMN email_verified_at INTEGER;
+  UPDATE users SET email_verified_at = created_at
+    WHERE is_bot = 1 OR email IN ('ava@fellowship.test', 'ben@fellowship.test', 'cleo@fellowship.test');
+
+  CREATE TABLE email_codes (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    purpose TEXT NOT NULL,              -- 'verify' (also passwordless sign-in) | 'reset'
+    code_hash TEXT NOT NULL,            -- sha256 of user id + 6-digit code
+    link_hash TEXT NOT NULL UNIQUE,     -- sha256 of the magic-link token
+    attempts INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL,
+    consumed_at INTEGER
+  );
+  CREATE INDEX email_codes_user ON email_codes(user_id, purpose, created_at);
+  `,
 ];

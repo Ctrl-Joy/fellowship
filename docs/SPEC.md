@@ -67,7 +67,7 @@ saved_items(user_id, message_id, saved_at)
 
 ## REST conventions
 - Prefix `/api`. JSON in/out. Errors: `{ error: { code, message } }` with 4xx/5xx.
-- Auth: `POST /api/auth/signup|login|logout`, `GET /api/auth/me`. Session cookie `fs_session`
+- Auth: `POST /api/auth/signup|login|logout|verify|resend|password/forgot|password/reset`, `GET /api/auth/me`. Only email-verified users get a session; see `docs/EMAIL.md`. Session cookie `fs_session`
   (httpOnly, sameSite lax).
 - Workspace-scoped routes: `/api/w/:workspaceId/...`; membership enforced.
 - Core endpoints (minimum):

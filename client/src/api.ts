@@ -1,5 +1,6 @@
 export class ApiError extends Error {
-  constructor(public status: number, public code: string, message: string) {
+  /** `details` is the whole `error` object from the response (e.g. `retryAfter` on 429s). */
+  constructor(public status: number, public code: string, message: string, public details?: Record<string, any>) {
     super(message);
   }
 }
@@ -25,7 +26,7 @@ async function request<T = any>(method: string, path: string, body?: unknown): P
   }
   if (!res.ok) {
     const err = data?.error;
-    throw new ApiError(res.status, err?.code ?? 'error', err?.message ?? `Request failed (${res.status})`);
+    throw new ApiError(res.status, err?.code ?? 'error', err?.message ?? `Request failed (${res.status})`, err ?? undefined);
   }
   return data as T;
 }

@@ -9,6 +9,7 @@ import { createBus } from './bus';
 import { createAuth } from './auth';
 import { createRealtime } from './realtime';
 import { ids } from './ids';
+import { mailerFromEnv, type Mailer } from './mailer';
 import { HttpError } from './errors';
 import { createAccess } from './modules/core/access';
 import { createMessageService } from './modules/core/messages';
@@ -32,6 +33,8 @@ export interface BuildOptions {
   port?: number;
   logger?: boolean;
   isTest?: boolean;
+  /** Override the mailer (defaults to mailerFromEnv: Brevo, console, or memory in tests). */
+  mailer?: Mailer;
 }
 
 export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance> {
@@ -43,6 +46,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     uploadsDir: opts.uploadsDir ?? join(dataDir, 'uploads'),
     port: opts.port ?? Number(process.env.API_PORT ?? 4000),
     isTest: opts.isTest ?? false,
+    appUrl: (process.env.APP_URL || 'http://localhost:5173').replace(/\/+$/, ''),
   };
 
   const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 5 * 1024 * 1024 });
@@ -51,13 +55,14 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
 
   const bus = createBus((err, ev) => app.log.error({ err, type: ev.type }, 'bus handler failed'));
   const auth = createAuth(db);
+  const mailer = opts.mailer ?? mailerFromEnv(process.env, config.isTest);
   const realtime = createRealtime(db, bus, auth);
   const access = createAccess(db);
   const messages = createMessageService(db, bus, ids, access);
   const closers: (() => void | Promise<void>)[] = [];
 
   const ctx: ModuleContext = {
-    db, bus, realtime, auth, config, ids, messages, access,
+    db, bus, realtime, auth, config, ids, mailer, messages, access,
     core: {} as CoreApi,
     onClose: (fn) => { closers.push(fn); },
   };
@@ -70,7 +75,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
 
   app.setErrorHandler((err: any, _req, reply) => {
     if (err instanceof HttpError) {
-      return reply.status(err.statusCode).send({ error: { code: err.code, message: err.message } });
+      return reply.status(err.statusCode).send({ error: { code: err.code, message: err.message, ...err.details } });
     }
     if (err.validation) {
       return reply.status(400).send({ error: { code: 'bad_request', message: err.message } });

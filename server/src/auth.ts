@@ -2,7 +2,7 @@ import { scryptSync, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Db } from './db';
 import { randomToken } from './ids';
-import { unauthorized } from './errors';
+import { HttpError, unauthorized } from './errors';
 
 export const SESSION_COOKIE = 'fs_session';
 export const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -23,6 +23,8 @@ export interface UserRow {
   status_expires: number | null;
   created_at: number;
   is_bot: number;
+  /** null until the person proves they own the address (bots are created verified). */
+  email_verified_at: number | null;
 }
 
 declare module 'fastify' {
@@ -50,9 +52,15 @@ export function createAuth(db: Db) {
     'SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token = ? AND s.expires_at > ?',
   );
 
-  function userFromToken(token: string | undefined | null): UserRow | null {
+  function sessionUser(token: string | undefined | null): UserRow | null {
     if (!token) return null;
     return (findSession.get(token, Date.now()) as unknown as UserRow) ?? null;
+  }
+
+  /** The signed-in, email-verified user for a session token, else null. */
+  function userFromToken(token: string | undefined | null): UserRow | null {
+    const user = sessionUser(token);
+    return user && user.email_verified_at != null ? user : null;
   }
 
   function createSession(userId: string): { token: string; expiresAt: number } {
@@ -79,10 +87,11 @@ export function createAuth(db: Db) {
     reply.clearCookie(SESSION_COOKIE, { path: '/' });
   }
 
-  /** Fastify preHandler: rejects with 401 unless a valid session cookie is present. */
+  /** Fastify preHandler: 401 without a valid session, 403 `email_unverified` for unverified users. */
   async function requireUser(req: FastifyRequest): Promise<void> {
-    const user = userFromToken(req.cookies?.[SESSION_COOKIE]);
+    const user = sessionUser(req.cookies?.[SESSION_COOKIE]);
     if (!user) throw unauthorized();
+    if (user.email_verified_at == null) throw emailUnverified();
     req.user = user;
   }
 
@@ -98,6 +107,9 @@ export function createAuth(db: Db) {
 }
 
 export type Auth = ReturnType<typeof createAuth>;
+
+export const emailUnverified = () =>
+  new HttpError(403, 'email_unverified', 'Please verify your email address to continue');
 
 /** Narrow req.user after requireUser has run. */
 export function me(req: FastifyRequest): UserRow {

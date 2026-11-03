@@ -1,11 +1,12 @@
 import type { FastifyInstance } from 'fastify';
 import type { ModuleContext } from '../../context';
 import type { UserRow } from '../../auth';
-import { me } from '../../auth';
+import { emailUnverified, me } from '../../auth';
 import { parse, z } from '../../validate';
-import { conflict, notFound, unauthorized } from '../../errors';
+import { HttpError, conflict, notFound, unauthorized } from '../../errors';
 import { publicUser } from './serializers';
 import { SESSION_COOKIE } from '../../auth';
+import { createVerification } from './verification';
 
 const signupBody = z.object({
   email: z.string().trim().toLowerCase().email().max(200),
@@ -19,6 +20,16 @@ const loginBody = z.object({
   email: z.string().trim().toLowerCase(),
   password: z.string(),
 });
+
+const emailBody = z.object({ email: z.string().trim().toLowerCase().max(200) });
+
+const password = z.string().min(8).max(200);
+
+/** Either the typed code (with the email it was sent to) or the magic-link token. */
+const codeOrToken = z.union([
+  z.object({ email: z.string().trim().toLowerCase().max(200), code: z.string().max(20) }),
+  z.object({ token: z.string().min(10).max(200) }),
+]);
 
 const profileBody = z.object({
   fullName: z.string().trim().min(1).max(80),
@@ -44,36 +55,110 @@ export function registerAuthRoutes(app: FastifyInstance, ctx: ModuleContext) {
   const getUser = (id: string) => db.prepare('SELECT * FROM users WHERE id = ?').get(id) as unknown as UserRow | undefined;
 
   /** Create a user row (also used by seed and by bot creation in other modules). */
-  function createUser(input: { email: string; password: string; fullName: string; displayName?: string; timezone?: string; isBot?: boolean }) {
+  const verification = createVerification(ctx);
+  const userByEmail = (email: string) =>
+    db.prepare('SELECT * FROM users WHERE email = ? AND is_bot = 0').get(email) as unknown as UserRow | undefined;
+
+  function startSession(reply: any, userId: string) {
+    const s = auth.createSession(userId);
+    auth.setSessionCookie(reply, s.token, s.expiresAt);
+  }
+
+  /** Create a user row (also used by seed and by bot creation in other modules). Bots are always verified. */
+  function createUser(input: { email: string; password: string; fullName: string; displayName?: string; timezone?: string; isBot?: boolean; verified?: boolean }) {
     if (db.prepare('SELECT 1 FROM users WHERE email = ?').get(input.email)) {
       throw conflict('An account with that email already exists', 'email_taken');
     }
     const id = ids.next('U');
+    const now = Date.now();
     db.prepare(
-      `INSERT INTO users (id, email, password_hash, full_name, display_name, timezone, created_at, is_bot)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (id, email, password_hash, full_name, display_name, timezone, created_at, is_bot, email_verified_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(id, input.email, auth.hashPassword(input.password), input.fullName,
-      input.displayName || input.fullName.split(' ')[0], input.timezone || 'UTC', Date.now(), input.isBot ? 1 : 0);
+      input.displayName || input.fullName.split(' ')[0], input.timezone || 'UTC', now, input.isBot ? 1 : 0,
+      input.isBot || input.verified ? now : null);
     return getUser(id)!;
   }
 
-  app.post('/api/auth/signup', async (req, reply) => {
+  /** Signup never signs in: the account stays unverified until the emailed code or link is used. */
+  app.post('/api/auth/signup', async (req) => {
     const body = parse(signupBody, req.body);
     const user = createUser(body);
-    const s = auth.createSession(user.id);
-    auth.setSessionCookie(reply, s.token, s.expiresAt);
-    return { user: publicUser(user) };
+    try {
+      const sent = await verification.issue(user, 'verify');
+      return { verificationRequired: true, email: user.email, emailSent: true, resendAfter: sent.resendAfter };
+    } catch (err) {
+      if (!(err instanceof HttpError)) throw err;
+      return { verificationRequired: true, email: user.email, emailSent: false, resendAfter: 0 };
+    }
   });
 
   app.post('/api/auth/login', async (req, reply) => {
     const body = parse(loginBody, req.body);
-    const user = db.prepare('SELECT * FROM users WHERE email = ? AND is_bot = 0').get(body.email) as unknown as UserRow | undefined;
+    const user = userByEmail(body.email);
     if (!user || !auth.verifyPassword(body.password, user.password_hash)) {
       throw Object.assign(unauthorized('Incorrect email or password'), { code: 'invalid_credentials' });
     }
-    const s = auth.createSession(user.id);
-    auth.setSessionCookie(reply, s.token, s.expiresAt);
+    if (user.email_verified_at == null) throw emailUnverified();
+    startSession(reply, user.id);
     return { user: publicUser(user) };
+  });
+
+  /**
+   * Email a 6-digit code + magic link. For an unverified account it verifies the address; for a
+   * verified one it is a passwordless sign-in. Unknown addresses get the same response.
+   */
+  app.post('/api/auth/resend', async (req) => {
+    const { email } = parse(emailBody, req.body);
+    const user = userByEmail(email);
+    if (!user) return { ok: true, resendAfter: 60 };
+    const sent = await verification.issue(user, 'verify');
+    return { ok: true, resendAfter: sent.resendAfter };
+  });
+
+  /** Redeem a code or magic link: marks the email verified and signs in. */
+  app.post('/api/auth/verify', async (req, reply) => {
+    const body = parse(codeOrToken, req.body);
+    let userId: string;
+    if ('token' in body) {
+      userId = verification.consumeLink(body.token, 'verify');
+    } else {
+      const user = userByEmail(body.email);
+      verification.consumeCode(user?.id, 'verify', body.code);
+      userId = user!.id;
+    }
+    db.prepare('UPDATE users SET email_verified_at = ? WHERE id = ? AND email_verified_at IS NULL').run(Date.now(), userId);
+    startSession(reply, userId);
+    return { user: publicUser(getUser(userId)!) };
+  });
+
+  app.post('/api/auth/password/forgot', async (req) => {
+    const { email } = parse(emailBody, req.body);
+    const user = userByEmail(email);
+    if (!user) return { ok: true, resendAfter: 60 };
+    const sent = await verification.issue(user, 'reset');
+    return { ok: true, resendAfter: sent.resendAfter };
+  });
+
+  /** Set a new password from a reset code or link; signs out every other session. */
+  app.post('/api/auth/password/reset', async (req, reply) => {
+    const raw = (req.body ?? {}) as Record<string, unknown>;
+    const body = parse(codeOrToken, raw);
+    const newPassword = parse(z.object({ password }), raw).password;
+    let userId: string;
+    if ('token' in body) {
+      userId = verification.consumeLink(body.token, 'reset');
+    } else {
+      const user = userByEmail(body.email);
+      verification.consumeCode(user?.id, 'reset', body.code);
+      userId = user!.id;
+    }
+    const now = Date.now();
+    db.prepare('UPDATE users SET password_hash = ?, email_verified_at = COALESCE(email_verified_at, ?) WHERE id = ?')
+      .run(auth.hashPassword(newPassword), now, userId);
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId);
+    startSession(reply, userId);
+    return { user: publicUser(getUser(userId)!) };
   });
 
   app.post('/api/auth/logout', async (req, reply) => {

@@ -5,6 +5,7 @@ import { useSession } from './store/session';
 import { applyTheme, useUi } from './store/ui';
 import type { User } from './types';
 import { AuthPage } from './pages/AuthPage';
+import { ForgotPasswordPage, ResetPasswordPage, VerifyPage } from './pages/VerifyPages';
 import { JoinPage, WorkspacesPage } from './pages/WorkspacesPage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { LandingPage } from './pages/LandingPage';
@@ -42,6 +43,9 @@ export function App() {
       <Routes>
         <Route path="/login" element={me ? <Navigate to="/" replace /> : <AuthPage mode="login" />} />
         <Route path="/signup" element={me ? <Navigate to="/" replace /> : <AuthPage mode="signup" />} />
+        <Route path="/verify" element={me ? <Navigate to="/" replace /> : <VerifyPage />} />
+        <Route path="/forgot-password" element={me ? <Navigate to="/" replace /> : <ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/workspaces" element={<RequireAuth><WorkspacesPage /></RequireAuth>} />
         <Route path="/join/:code" element={<RequireAuth><JoinPage /></RequireAuth>} />
         <Route path="/w/:wid/*" element={<RequireAuth><WorkspacePage /></RequireAuth>} />

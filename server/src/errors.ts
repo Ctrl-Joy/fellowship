@@ -1,5 +1,6 @@
 export class HttpError extends Error {
-  constructor(public statusCode: number, public code: string, message: string) {
+  /** `details` are merged into the JSON error body (e.g. `{ retryAfter }`). */
+  constructor(public statusCode: number, public code: string, message: string, public details?: Record<string, unknown>) {
     super(message);
   }
 }

@@ -4,6 +4,7 @@ import type { Bus } from './bus';
 import type { Realtime } from './realtime';
 import type { Auth } from './auth';
 import type { Ids } from './ids';
+import type { Mailer } from './mailer';
 import type { MessageService } from './modules/core/messages';
 import type { Access } from './modules/core/access';
 import type { CoreApi } from './modules/core';
@@ -13,6 +14,8 @@ export interface AppConfig {
   dataDir: string;
   uploadsDir: string;
   port: number;
+  /** Public URL of the web client, used in emailed links (APP_URL). */
+  appUrl: string;
   /** true inside buildApp() for tests (no timers that keep the process alive, etc.) */
   isTest: boolean;
 }
@@ -24,6 +27,8 @@ export interface ModuleContext {
   auth: Auth;
   config: AppConfig;
   ids: Ids;
+  /** Transactional email (Brevo, console fallback, or an in-memory outbox in tests). */
+  mailer: Mailer;
   /** Message serialization, enrichers and the single post() path (owned by core). */
   messages: MessageService;
   /** Membership / permission helpers (owned by core). */

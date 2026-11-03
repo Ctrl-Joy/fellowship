@@ -4,6 +4,10 @@ import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
 import { buildApp } from './app';
 
+// Local secrets (BREVO_API_KEY, …) live in the repo-root .env, which is git-ignored.
+const envFile = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '.env');
+if (existsSync(envFile)) process.loadEnvFile(envFile);
+
 // API_PORT, not PORT: tools that launch `npm run dev` set PORT for the Vite client.
 const port = Number(process.env.API_PORT ?? 4000);
 // 'localhost' makes Fastify bind both 127.0.0.1 and ::1.

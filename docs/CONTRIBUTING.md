@@ -10,6 +10,7 @@ mention it in your pull request.
 npm install            # once
 npm run seed           # recreate server/data/fellowship.db (ava@/ben@/cleo@fellowship.test, pw fellowship123)
 npm run dev            # API :4000 (tsx watch) + Vite :5173 (proxies /api, /ws, /files)
+cp .env.example .env   # optional: BREVO_API_KEY etc. Unset = emails print to the server console (docs/EMAIL.md)
 npm test               # node:test, all server/test/**/*.test.ts (sequential)
 npm run build          # server tsc --noEmit, client tsc + vite build
 ```

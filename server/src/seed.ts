@@ -15,9 +15,9 @@ const { ctx } = app;
 const { core, messages, db } = ctx;
 
 const PASSWORD = 'fellowship123';
-const ava = core.createUser({ email: 'ava@fellowship.test', password: PASSWORD, fullName: 'Ava Okafor', displayName: 'ava', timezone: 'Europe/London' });
-const ben = core.createUser({ email: 'ben@fellowship.test', password: PASSWORD, fullName: 'Ben Lindqvist', displayName: 'ben', timezone: 'America/New_York' });
-const cleo = core.createUser({ email: 'cleo@fellowship.test', password: PASSWORD, fullName: 'Cleo Marchetti', displayName: 'cleo', timezone: 'Asia/Kolkata' });
+const ava = core.createUser({ email: 'ava@fellowship.test', password: PASSWORD, fullName: 'Ava Okafor', displayName: 'ava', timezone: 'Europe/London', verified: true });
+const ben = core.createUser({ email: 'ben@fellowship.test', password: PASSWORD, fullName: 'Ben Lindqvist', displayName: 'ben', timezone: 'America/New_York', verified: true });
+const cleo = core.createUser({ email: 'cleo@fellowship.test', password: PASSWORD, fullName: 'Cleo Marchetti', displayName: 'cleo', timezone: 'Asia/Kolkata', verified: true });
 db.prepare("UPDATE users SET title = 'Product lead' WHERE id = ?").run(ava.id);
 db.prepare("UPDATE users SET title = 'Backend engineer' WHERE id = ?").run(ben.id);
 db.prepare("UPDATE users SET title = 'Designer' WHERE id = ?").run(cleo.id);

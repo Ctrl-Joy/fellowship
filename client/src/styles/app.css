@@ -93,6 +93,12 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
 .auth-brand p { font-size: 19px; max-width: 420px; color: #CFE4DC; margin: 0; }
 .auth-card { align-self: center; justify-self: center; width: min(400px, 90%); display: flex; flex-direction: column; gap: 16px; }
 .auth-card h2 { font-size: 26px; margin-bottom: 4px; }
+.auth-lead { margin: -6px 0 0; line-height: 1.5; }
+.auth-email { color: var(--fg); word-break: break-all; }
+.auth-actions { justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.auth-notice { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg)); font-size: 13.5px; }
+.auth-info { color: var(--brand); background: color-mix(in srgb, var(--brand) 10%, var(--bg)); padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13.5px; }
+.code-input { font-size: 28px; font-weight: 700; letter-spacing: 0.45em; text-align: center; padding: 10px 0 10px 0.45em; font-variant-numeric: tabular-nums; font-family: ui-monospace, Consolas, monospace; }
 .landing { min-height: 100%; background: var(--bg-subtle); }
 .landing-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; border-bottom: 1px solid var(--border); background: var(--bg); }
 .landing-body { max-width: 860px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 24px; }
