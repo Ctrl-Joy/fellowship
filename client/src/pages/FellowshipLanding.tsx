@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Icon } from '../components/Icon';
+import { LogoStacked, RingMark, WordmarkImage } from '../components/Logo';
 import { FOOTER_GROUPS } from './explore/content';
 import '../styles/fellowship.css';
 
@@ -56,16 +57,6 @@ const FAQ = [
   { q: 'Where is my data stored?', a: 'In a SQLite database on the server you run Fellowship on. Nothing is sent anywhere else.' },
 ];
 
-function Mark({ size = 26 }: { size?: number }) {
-  return (
-    <svg width={size} height={size * 0.9} viewBox="4 3 56 50" fill="none" stroke="#FA4C0D" strokeWidth="6" aria-hidden="true">
-      <circle cx="32" cy="20" r="11" />
-      <circle cx="23" cy="36" r="11" />
-      <circle cx="41" cy="36" r="11" />
-    </svg>
-  );
-}
-
 function Chevron() {
   return <svg viewBox="0 0 8 5" width="8" height="5" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
@@ -87,8 +78,8 @@ export function SiteHeader() {
   return (
     <header className="fl-header" ref={ref}>
       <Link to="/welcome" className="fl-logo" aria-label="Fellowship home">
-        <Mark />
-        <span className="fl-wordmark">FELLOWSHIP</span>
+        <RingMark height={30} />
+        <WordmarkImage height={18} className="fl-wordmark" />
       </Link>
       <nav className="fl-nav" aria-label="Main">
         <Link to="/explore/channels">Product <Chevron /></Link>
@@ -111,8 +102,7 @@ export function SiteFooter() {
     <footer className="fl-footer">
       <div className="fl-footer-top">
         <Link to="/welcome" className="fl-footer-brand" aria-label="Fellowship home">
-          <Mark size={34} />
-          <span className="fl-wordmark">FELLOWSHIP</span>
+          <LogoStacked width={170} />
         </Link>
         {FOOTER_GROUPS.map((col) => (
           <div key={col.title} className="fl-footer-col">
