@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { api } from '../api';
 import { useSession } from '../store/session';
-import { LogoMark } from '../components/Logo';
+import { RingEmblem } from '../components/RingEmblem';
 import type { User } from '../types';
 
 export function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
@@ -36,8 +36,8 @@ export function AuthPage({ mode }: { mode: 'login' | 'signup' }) {
   return (
     <div className="auth">
       <div className="auth-brand">
-        <LogoMark size={56} />
-        <h1>Fellowship</h1>
+        <RingEmblem size={96} />
+        <h1 className="sr-only">Fellowship</h1>
         <p>Where your team talks, decides and gets things done — together.</p>
       </div>
       <form className="auth-card" onSubmit={submit}>

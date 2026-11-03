@@ -1,4 +1,5 @@
 import type { NotificationItem } from './store';
+import { useSession, displayName } from '../../store/session';
 
 /** One-line description of a notification, written for the activity feed and desktop alerts. */
 export function describeNotification(n: NotificationItem, actor: string, convLabel: string | null): string {
@@ -23,7 +24,10 @@ export function channelLabel(n: NotificationItem): string | null {
 export function previewText(text: string | null): string {
   if (text == null) return 'This message was deleted.';
   return text
-    .replace(/<@[A-Za-z0-9]+>/g, '@someone')
+    .replace(/<@([A-Za-z0-9]+)>/g, (_m, id) => {
+      const u = useSession.getState().members[id];
+      return u ? `@${displayName(u)}` : '@someone';
+    })
     .replace(/<!(channel|everyone|here)>/g, (_m, g) => `@${g}`)
     .replace(/<#[A-Za-z0-9]+\|?([^>]*)>/g, (_m, g) => `#${g || 'channel'}`)
     .replace(/\s+/g, ' ')

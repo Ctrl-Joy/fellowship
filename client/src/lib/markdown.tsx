@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import { useSession } from '../store/session';
+import { useSession, displayName } from '../store/session';
 import { useConversations } from '../store/conversations';
 import { useUi } from '../store/ui';
 import { emojiForShortcode } from '../features/reactions/shortcodes';
@@ -136,9 +136,15 @@ function ChannelLink({ conversationId }: { conversationId: string }) {
 
 /** Plain-text preview (for notifications, quick switcher, saved list). */
 export function plainText(text: string, names: { user?: (id: string) => string; conv?: (id: string) => string } = {}) {
+  // Without explicit resolvers, look names up in the loaded workspace.
+  const user = names.user ?? ((id: string) => {
+    const m = useSession.getState().members[id];
+    return m ? displayName(m) : 'someone';
+  });
+  const conv = names.conv ?? ((id: string) => useConversations.getState().byId[id]?.name ?? 'channel');
   return text
-    .replace(/<@([A-Z0-9]+)>/g, (_a, id) => `@${names.user?.(id) ?? 'someone'}`)
-    .replace(/<#([A-Z0-9]+)>/g, (_a, id) => `#${names.conv?.(id) ?? 'channel'}`)
+    .replace(/<@([A-Z0-9]+)>/g, (_a, id) => `@${user(id)}`)
+    .replace(/<#([A-Z0-9]+)>/g, (_a, id) => `#${conv(id)}`)
     .replace(/<!(channel|here|everyone)>/g, '@$1')
     .replace(/<(https?:[^|>]+)\|([^>]+)>/g, '$2')
     .replace(/```/g, '')

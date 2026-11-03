@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import { LogoMark } from '../components/Logo';
+import { RingEmblem } from '../components/RingEmblem';
 import { Icon } from '../components/Icon';
+import { RingIntro } from './RingIntro';
 import '../styles/landing.css';
 
 /**
@@ -43,6 +44,7 @@ const WORD = 'Fellowship';
 export function LandingPage() {
   const stage = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLDivElement | null)[]>([]);
+  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -80,14 +82,16 @@ export function LandingPage() {
   return (
     <div className="lp">
       <header className="lp-nav">
-        <Link to="/" className="lp-brand"><LogoMark size={28} /> Fellowship</Link>
+        <Link to="/" className="lp-brand" aria-label="Fellowship home"><RingEmblem size={52} /></Link>
         <nav>
           <Link to="/login" className="lp-link">Sign in</Link>
           <Link to="/signup" className="lp-cta">Get started</Link>
         </nav>
       </header>
 
-      <section className="hero" aria-label="Fellowship">
+      <RingIntro onEnter={() => heroRef.current?.scrollIntoView({ behavior: 'smooth' })} />
+
+      <section className="hero" aria-label="Fellowship features" ref={heroRef}>
         <div className="hero-stage" ref={stage}>
           <svg className="hero-orbits" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
             {TRACKS.map((t, i) => (
@@ -107,7 +111,7 @@ export function LandingPage() {
             <span className="hero-word-spacer">{WORD}</span>
             <span className="hero-ghost">{WORD}</span>
           </div>
-          <h1 className="hero-word">{WORD}</h1>
+          <p className="hero-word">{WORD}</p>
 
           {CARDS.map((c, i) => (
             <div key={c.icon} className="hero-card" ref={(n) => { cards.current[i] = n; }}

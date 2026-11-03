@@ -1,0 +1,56 @@
+/* Ring intro: dark stone, turning antique-gold script, glowing title, golden fog (canvas). */
+.ri {
+  position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; color: #F2D188;
+  /* Stone texture: fractal noise over a warm, vignetted near-black. */
+  background:
+    radial-gradient(ellipse at 50% 48%, rgba(70, 58, 40, 0.28), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.55 0 0 0 0 0.5 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.33 0 0 0 0 0.3 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at center, #1A1816 0%, #0D0C0B 55%, #060606 100%);
+}
+.ri-stage { position: relative; width: min(86vmin, 720px); aspect-ratio: 1; container-type: inline-size; }
+.ri-svg, .ri-smoke { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ri-smoke { pointer-events: none; mix-blend-mode: screen; }
+
+.ri-ring { transform-origin: 500px 500px; transform-box: view-box; animation: ri-turn linear infinite; will-change: transform; }
+@keyframes ri-turn { to { transform: rotate(360deg); } }
+.ri-ring-text { font-family: 'Pinyon Script', cursive; font-size: 54px; letter-spacing: 0.5px; animation: ri-breathe 6s ease-in-out infinite; }
+@keyframes ri-breathe { 0%, 100% { opacity: 0.86; } 50% { opacity: 1; } }
+
+.ri-title {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0;
+  font-family: 'Cinzel', 'Trajan Pro', Georgia, serif; font-weight: 700;
+  font-size: 6.6cqw; letter-spacing: 0.06em; white-space: nowrap;
+  /* Metallic antique gold: banded gradient clipped to the letters. */
+  background: linear-gradient(180deg, #FBEBBE 0%, #E2B55E 38%, #9E7430 52%, #E9C77A 66%, #B98A3B 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 10px rgba(240, 180, 80, 0.35)) drop-shadow(0 0 28px rgba(200, 130, 40, 0.22));
+  animation: ri-glow 5s ease-in-out infinite;
+}
+@keyframes ri-glow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(240, 180, 80, 0.3)) drop-shadow(0 0 24px rgba(200, 130, 40, 0.18)); }
+  50% { filter: drop-shadow(0 0 13px rgba(250, 196, 96, 0.45)) drop-shadow(0 0 36px rgba(210, 140, 50, 0.28)); }
+}
+
+.ri-enter {
+  position: absolute; bottom: clamp(20px, 5vh, 44px); left: 50%; transform: translateX(-50%);
+  font-family: 'Cinzel', Georgia, serif; font-size: 14px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: #D9B56A; padding: 10px 18px; border: 1px solid rgba(217, 181, 106, 0.35); border-radius: 999px;
+  background: rgba(13, 12, 11, 0.5); cursor: pointer;
+}
+.ri-enter:hover { color: #F6E2A6; border-color: rgba(246, 226, 166, 0.6); }
+.ri-enter span { display: inline-block; margin-left: 6px; animation: ri-bob 2.4s ease-in-out infinite; }
+@keyframes ri-bob { 50% { transform: translateY(3px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ri-ring, .ri-ring-text, .ri-title, .ri-enter span { animation: none; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Ring emblem (top-left brand mark). */
+.ring-emblem { display: block; flex: none; filter: drop-shadow(0 0 6px rgba(226, 168, 78, 0.25)); }
+.ring-emblem .ring-emblem-ring { transform-origin: 50px 50px; transform-box: view-box; }
+.ring-emblem.spin .ring-emblem-ring { animation: ri-turn 60s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .ring-emblem.spin .ring-emblem-ring { animation: none; } }

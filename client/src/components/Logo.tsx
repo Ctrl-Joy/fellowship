@@ -1,3 +1,5 @@
+import { RingEmblem } from './RingEmblem';
+
 /** Fellowship mark: three linked rings. Original artwork. */
 export function LogoMark({ size = 32, framed = true }: { size?: number; framed?: boolean }) {
   return (
@@ -12,11 +14,7 @@ export function LogoMark({ size = 32, framed = true }: { size?: number; framed?:
   );
 }
 
+/** Top-left brand mark: the turning gold ring emblem. */
 export function Wordmark({ size = 28 }: { size?: number }) {
-  return (
-    <span className="wordmark" style={{ fontSize: size * 0.72 }}>
-      <LogoMark size={size} />
-      <span>Fellowship</span>
-    </span>
-  );
+  return <span className="wordmark"><RingEmblem size={Math.round(size * 1.6)} /></span>;
 }
