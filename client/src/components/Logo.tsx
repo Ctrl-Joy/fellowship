@@ -20,3 +20,15 @@ export function Wordmark({ size = 28 }: { size?: number }) {
     </span>
   );
 }
+
+/** Orange three-ring mark with the spaced FELLOWSHIP wordmark, as on the landing page. */
+export function BrandLockup({ className = '' }: { className?: string }) {
+  return (
+    <span className={`brand-lockup ${className}`.trim()}>
+      <svg width="26" height="23" viewBox="4 3 56 50" fill="none" stroke="#FA4C0D" strokeWidth="6" aria-hidden="true">
+        <circle cx="32" cy="20" r="11" /><circle cx="23" cy="36" r="11" /><circle cx="41" cy="36" r="11" />
+      </svg>
+      FELLOWSHIP
+    </span>
+  );
+}

@@ -48,9 +48,9 @@
 
 /* Dark: neutral near-black surfaces (rail #16161A, sidebar #121416, main #1A1E22, composer #22262A). */
 :root[data-theme='dark'] {
-  --brand: #2A8C74;
-  --brand-strong: #34A086;
-  --brand-soft: #173C33;
+  --brand: #FA4C0D;
+  --brand-strong: #FF6328;
+  --brand-soft: #3A1E12;
   --accent: #F2A541;
   --accent-soft: #3A2E1A;
   --mention: #E8675D;
@@ -85,6 +85,6 @@
   --code-bg: #22262A;
   --code-fg: #E8912D;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
-  --focus: 0 0 0 3px rgba(52, 160, 134, 0.4);
+  --focus: 0 0 0 3px rgba(250, 76, 13, 0.35);
   color-scheme: dark;
 }

@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router';
 import { api } from '../api';
 import { useSession } from '../store/session';
 import { loadWorkspaces, logout } from '../store/actions';
-import { Wordmark } from '../components/Logo';
+import { Link } from 'react-router';
+import { BrandLockup } from '../components/Logo';
 import { initials } from '../components/Avatar';
 import type { Workspace } from '../types';
 
@@ -43,12 +44,13 @@ export function WorkspacesPage() {
   return (
     <div className="landing">
       <header className="landing-head">
-        <Wordmark />
+        <Link to="/" aria-label="Fellowship home"><BrandLockup /></Link>
         <div className="row gap-sm"><span className="muted">{me.email}</span>
           <button className="btn btn-sm" onClick={async () => { await logout(); navigate('/login'); }}>Sign out</button></div>
       </header>
       <div className="landing-body">
-        <h1>Welcome{workspaces.length ? ' back' : ''}, {me.displayName || me.fullName}</h1>
+        <h1>Welcome{workspaces.length ? ' back' : ''},<br /><em>{me.displayName || me.fullName}</em></h1>
+        <p className="landing-lead">Open a workspace, start a new one for your community, or join one you've been invited to.</p>
         {loaded && workspaces.length > 0 && (
           <section className="card-panel">
             <h3>Your workspaces</h3>

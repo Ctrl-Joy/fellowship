@@ -13,13 +13,16 @@ const SHORTCUTS: [string, string][] = [
   ['Esc', 'Mark conversation as read'],
 ];
 
-export function TopBar({ workspace }: { workspace: Workspace; currentUser: User }) {
+export function TopBar({ workspace, onMenu }: { workspace: Workspace; currentUser: User; onMenu?: () => void }) {
   const navigate = useNavigate();
   const openModal = useUi((s) => s.openModal);
   const [help, setHelp] = useState(false);
 
   return (
     <header className="topbar">
+      <button className="icon-btn topbar-menu" title="Channels and navigation" aria-label="Open navigation" onClick={onMenu}>
+        <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4.5h12M2 8h12M2 11.5h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+      </button>
       <div className="topbar-nav">
         <button className="icon-btn" title="Back" onClick={() => navigate(-1)}><Icon name="back" /></button>
         <button className="icon-btn" title="Forward" onClick={() => navigate(1)}><Icon name="forward" /></button>

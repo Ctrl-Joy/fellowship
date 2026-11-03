@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router';
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useSession } from '../store/session';
 import { useConversations } from '../store/conversations';
 import { useUi } from '../store/ui';
@@ -33,6 +33,10 @@ export function WorkspacePage() {
   const workspace = workspaces.find((w) => w.id === wid);
   const convLoaded = useConversations((s) => s.loaded);
   const membersLoaded = useSession((s) => s.membersLoaded);
+  // Phones: the rail and sidebar slide in as a drawer, closed again by any navigation.
+  const [navOpen, setNavOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => { setNavOpen(false); }, [pathname]);
   const rightPanel = useUi((s) => s.rightPanel);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -83,9 +87,10 @@ export function WorkspacePage() {
   }
 
   return (
-    <div className={`app${rightPanel ? ' with-panel' : ''}`}>
+    <div className={`app${rightPanel ? ' with-panel' : ''}${navOpen ? ' nav-open' : ''}`}>
       <WorkspaceRail currentUser={me} />
-      <TopBar workspace={workspace} currentUser={me} />
+      <TopBar workspace={workspace} currentUser={me} onMenu={() => setNavOpen((v) => !v)} />
+      <div className="nav-scrim" aria-hidden="true" onClick={() => setNavOpen(false)} />
       <Sidebar workspace={workspace} currentUser={me} />
       <main className="main">
         <Routes>
