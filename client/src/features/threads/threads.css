@@ -1,0 +1,32 @@
+/* Threads: thread panel header, Threads view, sidebar badge. Colours come from theme.css tokens. */
+
+.thread-follow { min-width: 92px; }
+.thread-follow.is-following { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+.threads-badge { margin-left: auto; }
+
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-left: auto; }
+.seg-btn { padding: 4px 12px; font-size: 13px; color: var(--fg-muted); background: var(--bg-elevated); }
+.seg-btn + .seg-btn { border-left: 1px solid var(--border); }
+.seg-btn.active { background: var(--brand-soft); color: var(--fg); font-weight: 600; }
+
+.thread-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.thread-row {
+  display: block; width: 100%; text-align: left; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-elevated);
+}
+.thread-row:hover { background: var(--bg-hover); }
+.thread-row.is-unread { border-color: var(--brand); background: var(--brand-soft); }
+.thread-row.is-unread .thread-row-text { color: var(--fg); font-weight: 600; }
+
+.thread-row-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.thread-row-where { font-weight: 700; font-size: 13px; color: var(--fg-muted); }
+.thread-row-head .muted { margin-left: auto; }
+.thread-row-head .badge { margin-left: 4px; }
+
+.thread-row-root, .thread-row-reply { display: flex; align-items: baseline; gap: 6px; min-width: 0; font-size: 14px; }
+.thread-row-root { align-items: center; }
+.thread-row-author { font-weight: 700; white-space: nowrap; }
+.thread-row-text { color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.thread-row-replies { margin: 6px 0 0 28px; padding-left: 10px; border-left: 2px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.thread-row-foot { margin-top: 8px; }

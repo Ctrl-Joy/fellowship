@@ -19,6 +19,7 @@ import ThreadsView from '../features/threads/ThreadsView';
 import ActivityView from '../features/notifications/ActivityView';
 import AppsView from '../features/apps/AppsView';
 import WorkflowsView from '../features/workflows/WorkflowsView';
+import CanvasesPage from '../features/canvases/CanvasesPage';
 import SearchResults from '../features/search/SearchResults';
 import HuddleWindow from '../features/huddles/HuddleWindow';
 
@@ -81,7 +82,7 @@ export function WorkspacePage() {
 
   return (
     <div className={`app${rightPanel ? ' with-panel' : ''}`}>
-      <WorkspaceRail />
+      <WorkspaceRail currentUser={me} />
       <TopBar workspace={workspace} currentUser={me} />
       <Sidebar workspace={workspace} currentUser={me} />
       <main className="main">
@@ -94,6 +95,7 @@ export function WorkspacePage() {
           <Route path="activity" element={<ActivityView workspaceId={wid} currentUser={me} />} />
           <Route path="apps" element={<AppsView workspaceId={wid} currentUser={me} />} />
           <Route path="workflows" element={<WorkflowsView workspaceId={wid} currentUser={me} />} />
+          <Route path="canvases/*" element={<CanvasesPage workspaceId={wid} currentUser={me} />} />
           <Route path="search" element={<SearchRoute workspaceId={wid} />} />
           <Route path="*" element={<Navigate to={`/w/${wid}`} replace />} />
         </Routes>

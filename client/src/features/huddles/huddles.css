@@ -1,0 +1,143 @@
+/* Huddles — header button, sidebar indicator, floating/docked/expanded call window. */
+
+.huddle-btn { gap: 6px; }
+.huddle-btn-live { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-strong); font-weight: 600; }
+.huddle-btn-live:hover:not(:disabled) { background: var(--brand); color: #fff; }
+.huddle-btn-in { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 600; }
+.huddle-btn-in:hover:not(:disabled) { background: var(--brand-strong); }
+.huddle-count { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+.huddle-live-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #3ccf91; flex: none;
+  box-shadow: 0 0 0 0 rgba(60, 207, 145, 0.6); animation: huddle-pulse 1.8s ease-out infinite;
+}
+@keyframes huddle-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(60, 207, 145, 0.55); }
+  70% { box-shadow: 0 0 0 7px rgba(60, 207, 145, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(60, 207, 145, 0); }
+}
+
+.huddle-ind {
+  display: inline-flex; align-items: center; gap: 2px; margin-left: auto; padding: 0 5px; height: 16px;
+  border-radius: 8px; font-size: 10.5px; font-weight: 700; color: #0c221d; background: #3ccf91; flex: none;
+}
+.huddle-ind + .badge { margin-left: 4px; }
+.huddle-ind-mine { background: var(--accent); }
+
+/* ---- floating window ---- */
+.huddle-win {
+  position: fixed; right: 20px; bottom: 20px; z-index: 60; width: 340px; max-height: calc(100vh - 40px);
+  display: flex; flex-direction: column; background: var(--bg-elevated); color: var(--fg);
+  border: 1px solid var(--border-strong); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden;
+}
+.huddle-expanded { inset: 56px 24px 24px 24px; width: auto; max-height: none; }
+.huddle-head {
+  display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 12px; cursor: grab; user-select: none;
+  background: var(--sidebar-bg); color: var(--sidebar-fg-strong);
+}
+.huddle-expanded .huddle-head { cursor: default; }
+.huddle-head .icon-btn { color: var(--sidebar-fg); width: 28px; height: 28px; }
+.huddle-head .icon-btn:hover { background: var(--sidebar-hover); color: #fff; }
+.huddle-title { font-weight: 700; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.huddle-elapsed { font-size: 12px; opacity: 0.75; font-variant-numeric: tabular-nums; flex: none; }
+.huddle-head-spacer { flex: 1; }
+
+.huddle-notice {
+  display: flex; align-items: flex-start; gap: 6px; padding: 8px 10px; font-size: 12.5px;
+  background: var(--accent-soft); color: var(--fg); border-bottom: 1px solid var(--border);
+}
+.huddle-notice span { flex: 1; }
+.huddle-notice .icon-btn { width: 22px; height: 22px; }
+
+.huddle-stage { position: relative; background: #000; flex: 1 1 auto; min-height: 160px; display: flex; }
+.huddle-stage-video { width: 100%; height: 100%; max-height: 60vh; object-fit: contain; background: #000; }
+.huddle-expanded .huddle-stage-video { max-height: none; }
+.huddle-stage-label {
+  position: absolute; left: 8px; bottom: 8px; font-size: 12px; color: #fff; padding: 2px 8px;
+  border-radius: 10px; background: rgba(0, 0, 0, 0.55);
+}
+
+.huddle-tiles {
+  display: grid; gap: 6px; padding: 8px; grid-template-columns: repeat(2, 1fr); overflow-y: auto;
+  background: var(--bg-subtle);
+}
+.huddle-tiles.n1 { grid-template-columns: 1fr; }
+.huddle-tiles.with-stage { grid-template-columns: repeat(4, 1fr); max-height: 120px; }
+.huddle-expanded .huddle-tiles { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); flex: 1; align-content: center; }
+.huddle-expanded .huddle-tiles.with-stage { flex: none; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); max-height: 150px; }
+
+.huddle-tile {
+  position: relative; aspect-ratio: 16 / 10; border-radius: 8px; background: var(--sidebar-bg);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  outline: 2px solid transparent; outline-offset: -2px; transition: outline-color 0.12s;
+}
+.huddle-tile.speaking { outline-color: #3ccf91; }
+.huddle-tiles.with-stage .huddle-tile .avatar { width: 28px !important; height: 28px !important; font-size: 11px !important; }
+.huddle-tile-video { width: 100%; height: 100%; object-fit: cover; background: #000; }
+.huddle-tile-video.mirror { transform: scaleX(-1); }
+.huddle-tile-name {
+  position: absolute; left: 4px; bottom: 4px; right: 4px; display: flex; align-items: center; gap: 3px;
+  font-size: 11.5px; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+.huddle-tile-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.huddle-tile-muted { color: #ff9a8f; flex: none; }
+.huddle-tile-state { position: absolute; top: 4px; right: 6px; font-size: 10.5px; color: rgba(255, 255, 255, 0.75); }
+
+.huddle-controls { display: flex; justify-content: center; gap: 8px; padding: 10px; border-top: 1px solid var(--border); }
+.huddle-controls.compact { padding: 0; border: 0; gap: 4px; }
+.huddle-ctl {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg);
+  color: var(--fg); display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.huddle-controls.compact .huddle-ctl { width: 30px; height: 30px; }
+.huddle-ctl:hover { background: var(--bg-hover); }
+.huddle-ctl:focus-visible { box-shadow: var(--focus); outline: none; }
+.huddle-ctl.off { color: var(--mention); border-color: var(--mention); background: var(--mention-soft); }
+.huddle-ctl.on { color: #fff; background: var(--brand); border-color: var(--brand); }
+.huddle-ctl.leave { color: #fff; background: var(--mention); border-color: var(--mention); }
+.huddle-ctl.leave:hover { filter: brightness(0.92); }
+
+.huddle-devices {
+  margin: 0 10px 10px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+  display: flex; flex-direction: column; gap: 8px; font-size: 12.5px;
+}
+.huddle-devices-head { display: flex; align-items: center; justify-content: space-between; }
+.huddle-devices label { display: flex; flex-direction: column; gap: 3px; color: var(--fg-muted); }
+.huddle-devices select {
+  height: 30px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg);
+  color: var(--fg); padding: 0 6px; font: inherit;
+}
+.huddle-devices-hint { margin: 0; color: var(--fg-faint); font-size: 11.5px; }
+
+.huddle-audio { display: none; }
+
+/* ---- docked bar ---- */
+.huddle-dock {
+  position: fixed; left: 12px; bottom: 12px; z-index: 60; display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 10px; background: var(--sidebar-bg); color: var(--sidebar-fg-strong);
+  border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: var(--shadow); max-width: calc(100vw - 24px);
+}
+.huddle-dock-title {
+  display: flex; align-items: center; gap: 6px; background: none; border: 0; color: inherit; cursor: pointer;
+  font: inherit; font-size: 13px; font-weight: 700; min-width: 0; padding: 0 2px;
+}
+.huddle-dock-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; }
+.huddle-dock-people { display: flex; align-items: center; }
+.huddle-dock-avatar { margin-left: -4px; border-radius: 7px; box-shadow: 0 0 0 2px var(--sidebar-bg); display: inline-flex; }
+.huddle-dock-avatar:first-child { margin-left: 0; }
+.huddle-dock-avatar.speaking { box-shadow: 0 0 0 2px #3ccf91; }
+.huddle-more { font-size: 11px; margin-left: 4px; opacity: 0.8; }
+.huddle-dock .huddle-ctl { background: rgba(255, 255, 255, 0.08); border-color: transparent; color: #fff; }
+.huddle-dock .huddle-ctl.off { background: var(--mention); color: #fff; }
+.huddle-dock .huddle-ctl.leave { background: var(--mention); }
+
+.huddle-toast {
+  position: fixed; right: 20px; bottom: 20px; z-index: 61; display: flex; align-items: center; gap: 8px;
+  padding: 8px 8px 8px 12px; border-radius: 8px; background: var(--bg-elevated); color: var(--fg);
+  border: 1px solid var(--mention); box-shadow: var(--shadow); font-size: 13px; max-width: 360px;
+}
+
+@media (max-width: 640px) {
+  .huddle-win { right: 8px; left: 8px; bottom: 8px; width: auto; }
+  .huddle-expanded { inset: 8px; }
+}

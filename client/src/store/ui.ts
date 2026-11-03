@@ -19,10 +19,15 @@ export type Modal =
   | { kind: 'custom'; key: string; props?: Record<string, unknown> }
   | null;
 
+/** Which list the sidebar shows, picked from the rail. */
+export type SidebarMode = 'home' | 'dms';
+
 interface UiState {
   theme: Theme;
   rightPanel: RightPanel;
   modal: Modal;
+  sidebarMode: SidebarMode;
+  setSidebarMode(m: SidebarMode): void;
   setTheme(t: Theme): void;
   toggleTheme(): void;
   openRightPanel(p: RightPanel): void;
@@ -36,7 +41,7 @@ function initialTheme(): Theme {
     const saved = localStorage.getItem('fs:theme');
     if (saved === 'light' || saved === 'dark') return saved;
   } catch { /* ignore */ }
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'dark';
 }
 
 export function applyTheme(t: Theme) {
@@ -47,6 +52,8 @@ export const useUi = create<UiState>()((set, get) => ({
   theme: initialTheme(),
   rightPanel: null,
   modal: null,
+  sidebarMode: 'home',
+  setSidebarMode: (sidebarMode) => set({ sidebarMode }),
   setTheme: (theme) => {
     try { localStorage.setItem('fs:theme', theme); } catch { /* ignore */ }
     applyTheme(theme);

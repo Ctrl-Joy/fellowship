@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useSession } from '../store/session';
 import { useConversations } from '../store/conversations';
 import { useUi } from '../store/ui';
+import { emojiForShortcode } from '../features/reactions/shortcodes';
 
 /**
  * Minimal, safe markdown for messages (no HTML injection — builds React nodes):
@@ -76,6 +77,7 @@ const INLINE = new RegExp(
     '((?<![\\w*])\\*([^*\\n]+)\\*(?![\\w*]))', // 14,15 bold
     '((?<![\\w])_([^_\\n]+)_(?![\\w]))', // 16,17 italic
     '((?<![\\w~])~([^~\\n]+)~(?![\\w~]))', // 18,19 strike
+    '(:([a-z][a-z0-9_+-]{1,40}):)', // 20,21 :emoji shortcode: (reactions module)
   ].join('|'),
   'g',
 );
@@ -100,6 +102,10 @@ export function renderInline(text: string): ReactNode[] {
     else if (m[14]) out.push(<strong key={key}>{renderInline(m[15])}</strong>);
     else if (m[16]) out.push(<em key={key}>{renderInline(m[17])}</em>);
     else if (m[18]) out.push(<s key={key}>{renderInline(m[19])}</s>);
+    else if (m[20]) {
+      const emoji = emojiForShortcode(m[21]);
+      out.push(emoji ? <span key={key} className="emoji-inline" role="img" aria-label={m[21]}>{emoji}</span> : m[20]);
+    }
     last = m.index + m[0].length;
   }
   if (last < text.length) out.push(text.slice(last));

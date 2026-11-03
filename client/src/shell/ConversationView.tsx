@@ -12,12 +12,25 @@ import { TypingIndicator } from './TypingIndicator';
 import { PinsTab } from './PinsTab';
 import { Avatar } from '../components/Avatar';
 import { Icon } from '../components/Icon';
+import { toggleStar, useStarred } from '../lib/starred';
 import HuddleButton from '../features/huddles/HuddleButton';
 import CanvasView from '../features/canvases/CanvasView';
 import FilesTab from '../features/files/FilesTab';
 import PresenceDot from '../features/presence/PresenceDot';
+import WorkflowShortcuts from '../features/workflows/WorkflowShortcuts';
 
 type Tab = 'messages' | 'canvas' | 'files' | 'pins';
+
+/** Prefill the top-bar search with an `in:` filter for this conversation. */
+function focusSearch(conversation: Conversation, title: string) {
+  const input = document.querySelector<HTMLInputElement>('.topbar-search input');
+  if (!input) return;
+  const scope = conversation.kind === 'channel' ? `in:#${conversation.name} ` : `in:@${title} `;
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+  setter?.call(input, scope);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+}
 
 export function ConversationView({ workspaceId, currentUser }: { workspaceId: string; currentUser: User }) {
   const { cid } = useParams<{ cid: string }>();
@@ -101,14 +114,19 @@ function ConversationHeader({ conversation, currentUser, workspaceId, tab, setTa
   const partner = dmPartnerId(conversation, currentUser.id);
   const isChannel = conversation.kind === 'channel';
   const memberIds = conversation.memberIds ?? [];
+  const openModal = useUi((s) => s.openModal);
+  const starred = useStarred().includes(conversation.id);
   const tabs: [Tab, string, string][] = [['messages', 'Messages', 'thread'], ['canvas', 'Canvas', 'canvas'], ['files', 'Files', 'file'], ['pins', 'Pins', 'pin']];
+  const selfId = conversation.kind === 'self' ? currentUser.id : partner;
 
   return (
     <header className="conv-head">
       <div className="conv-head-row">
-        <button className="conv-title" onClick={() => openPanel(partner && !isChannel ? { kind: 'profile', userId: partner } : { kind: 'details', conversationId: conversation.id })}>
-          {isChannel ? <Icon name={conversation.isPrivate ? 'lock' : 'hash'} size={18} /> : partner ? (
-            <span className="avatar-wrap"><Avatar userId={partner} size={22} /><PresenceDot userId={partner} size={8} /></span>
+        <button className={`icon-btn star-btn${starred ? ' on' : ''}`} title={starred ? 'Unstar' : 'Star conversation'}
+          aria-pressed={starred} onClick={() => toggleStar(conversation.id)}><Icon name="star" size={19} /></button>
+        <button className="conv-title" onClick={() => openPanel(selfId && !isChannel ? { kind: 'profile', userId: selfId } : { kind: 'details', conversationId: conversation.id })}>
+          {isChannel ? <Icon name={conversation.isPrivate ? 'lock' : 'hash'} size={18} /> : selfId ? (
+            <span className="avatar-wrap"><Avatar userId={selfId} size={24} /><PresenceDot userId={selfId} size={8} /></span>
           ) : <Icon name="users" size={18} />}
           <span className="conv-name">{title}</span>
           {conversation.isArchived && <span className="tag">Archived</span>}
@@ -122,16 +140,20 @@ function ConversationHeader({ conversation, currentUser, workspaceId, tab, setTa
               <span>{conversation.memberCount}</span>
             </button>
           )}
+          <WorkflowShortcuts workspaceId={workspaceId} conversation={conversation} currentUser={currentUser} />
           <HuddleButton workspaceId={workspaceId} conversation={conversation} currentUser={currentUser} />
-          <button className="icon-btn" title="Conversation details" onClick={() => openPanel({ kind: 'details', conversationId: conversation.id })}><Icon name="info" /></button>
+          <button className="icon-btn" title="Notification settings" onClick={() => openModal({ kind: 'notificationPrefs', conversationId: conversation.id })}><Icon name="bell" size={19} /></button>
+          <button className="icon-btn" title="Search in this conversation" onClick={() => focusSearch(conversation, title)}><Icon name="search" size={19} /></button>
+          <button className="icon-btn" title="Conversation details" onClick={() => openPanel({ kind: 'details', conversationId: conversation.id })}><Icon name="dots" size={19} /></button>
         </div>
       </div>
       <nav className="tabs">
         {tabs.map(([key, label, icon]) => (
           <button key={key} className={`tab${tab === key ? ' active' : ''}`} onClick={() => setTab(key)}>
-            <Icon name={icon} size={14} /> {label}
+            <Icon name={icon} size={15} /> {label}
           </button>
         ))}
+        <button className="tab-add" title="Open the canvas" onClick={() => setTab('canvas')}><Icon name="plus" size={16} /></button>
       </nav>
     </header>
   );

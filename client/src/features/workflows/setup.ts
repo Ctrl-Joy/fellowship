@@ -1,11 +1,13 @@
 import type { FeatureSetup } from '../types';
+import { ws } from '../../ws';
+import { useWorkflowRuns } from './store';
 
-/**
- * Called once per workspace load (see features/index.ts). Subscribe to WS events with
- * `ws.on(type, fn)` here and return a cleanup function. Stub created by core for 'workflows'.
- */
+/** Keep run summaries live for the builder's history view and status chips. */
 const setup: FeatureSetup = () => {
-  return () => {};
+  const off = ws.on('workflow.run_updated', (payload: any) => {
+    if (payload?.run?.id) useWorkflowRuns.getState().upsert(payload.run);
+  });
+  return () => { off(); };
 };
 
 export default setup;

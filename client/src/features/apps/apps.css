@@ -1,0 +1,108 @@
+/* Apps feature: directory, detail tabs, message parts. Uses the Fellowship theme tokens. */
+
+.apps-view .apps-scroll { padding: 18px 22px 28px; max-width: 880px; }
+.apps-intro { margin: 0 0 18px; line-height: 1.5; }
+.apps-section-title { margin: 26px 0 4px; font-size: 15px; }
+.apps-detail-head { gap: 10px; }
+.apps-detail-head h2 { margin: 0; }
+
+.app-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.app-card {
+  width: 100%; display: flex; align-items: center; gap: 14px; text-align: left;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-elevated); color: var(--fg);
+}
+.app-card:hover:not(:disabled) { border-color: var(--border-strong); background: var(--bg-hover); }
+.app-card:disabled { cursor: default; opacity: 0.85; }
+.app-card-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.app-card-name { font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.app-card-go { color: var(--brand); font-weight: 600; }
+.app-card-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex: none; display: inline-flex;
+  align-items: center; justify-content: center; background: var(--brand-soft); color: var(--brand);
+  font-size: 20px; font-weight: 700;
+}
+.app-card-icon-sm { width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }
+.app-chip {
+  font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--fg-muted);
+}
+
+.app-command-ref { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.app-command-ref li { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.app-command-ref code { font-size: 13px; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; }
+
+.app-section-block { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; background: var(--bg-elevated); }
+.app-section-block h3 { margin: 0 0 4px; font-size: 15px; }
+.app-section-block > p { margin: 0 0 12px; }
+.app-label { display: block; font-size: 12px; font-weight: 700; color: var(--fg-muted); margin-bottom: 4px; }
+.app-copy-field { display: flex; flex-direction: column; gap: 2px; }
+.app-kv { display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; align-items: center; }
+.app-scope {
+  display: inline-block; margin: 0 6px 4px 0; padding: 1px 7px; border-radius: 4px;
+  background: var(--code-bg); color: var(--fg); font-size: 12.5px;
+}
+.app-token-box {
+  display: flex; gap: 10px; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border-radius: var(--radius-sm); background: var(--code-bg); border: 1px solid var(--border);
+}
+.app-token-box code { word-break: break-all; font-size: 13px; }
+.app-warning {
+  padding: 10px 12px; border-radius: var(--radius-sm); background: var(--accent-soft);
+  border: 1px solid var(--accent); font-size: 13.5px;
+}
+.app-code {
+  margin: 0 0 8px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--code-bg);
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.5; overflow-x: auto; white-space: pre;
+  border: 1px solid var(--border);
+}
+.app-url { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.app-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.app-rows li {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg);
+}
+.app-fieldset { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px 10px; }
+.app-fieldset legend { font-size: 12px; font-weight: 700; color: var(--fg-muted); padding: 0 4px; }
+.app-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.app-table th, .app-table td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.app-table th { font-size: 12px; color: var(--fg-muted); font-weight: 700; }
+.app-status { font-size: 12px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }
+.app-status-delivered { background: var(--brand-soft); color: var(--brand); }
+.app-status-pending { background: var(--accent-soft); color: var(--fg-muted); }
+.app-status-failed { background: var(--mention-soft); color: var(--mention); }
+
+/* Messages: polls, buttons, ephemeral note, sections */
+.app-ephemeral-note {
+  display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 2px;
+  font-size: 12px; color: var(--fg-muted);
+}
+.app-ephemeral-note::before { content: '\25CF'; color: var(--accent); font-size: 9px; }
+.app-section { margin: 6px 0; }
+.app-poll { margin: 8px 0 4px; display: grid; gap: 6px; max-width: 520px; }
+.app-poll-opt {
+  position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong);
+  background: var(--bg-elevated); color: var(--fg); text-align: left; font-size: 14px;
+}
+.app-poll-opt:hover { border-color: var(--brand); }
+.app-poll-opt.active { border-color: var(--brand); }
+.app-poll-bar {
+  position: absolute; left: 0; top: 0; bottom: 0; background: var(--brand-soft);
+  transition: width 0.25s ease; z-index: 0;
+}
+.app-poll-opt.active .app-poll-bar { background: var(--brand); opacity: 0.22; }
+.app-poll-label, .app-poll-count { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; }
+.app-poll-count { font-size: 12.5px; color: var(--fg-muted); white-space: nowrap; }
+.app-poll-foot { margin-top: 2px; }
+.app-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.app-action-danger { color: var(--mention); border-color: var(--mention); }
+.app-action-danger:hover:not(:disabled) { background: var(--mention-soft); }
+
+.msg .app-poll .form-error,
+.msg .app-actions .form-error { width: 100%; }
+
+@media (max-width: 640px) {
+  .apps-view .apps-scroll { padding: 14px 16px 24px; }
+  .app-kv { grid-template-columns: 1fr; }
+}

@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import type { Conversation, Message, User } from '../types';
 import { useMessages } from '../store/messages';
 import { useSession, displayName } from '../store/session';
@@ -9,6 +10,8 @@ import { dayKey, formatDay, formatFull } from '../lib/time';
 import { MessageItem } from './MessageItem';
 import { Avatar } from '../components/Avatar';
 import { Icon } from '../components/Icon';
+import { useUi } from '../store/ui';
+import PresenceDot from '../features/presence/PresenceDot';
 
 const GROUP_WINDOW = 5 * 60_000;
 
@@ -68,6 +71,21 @@ export function MessageList({ conversation, currentUser, workspaceId }: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastId, conversation.id, conversation.isMember, conversation.unreadCount]);
 
+  // Jump target from search (?m=<messageId>): scroll to it and flash it. Added for the search feature.
+  const location = useLocation();
+  const jumpId = new URLSearchParams(location.search).get('m');
+  useEffect(() => {
+    if (!jumpId || !page?.loaded) return;
+    const el = scrollRef.current?.querySelector<HTMLElement>(`[data-mid="${CSS.escape(jumpId)}"]`);
+    if (!el) return;
+    atBottom.current = false;
+    el.scrollIntoView({ block: 'center' });
+    el.classList.add('msg-jump');
+    const t = window.setTimeout(() => el.classList.remove('msg-jump'), 2400);
+    return () => { window.clearTimeout(t); el.classList.remove('msg-jump'); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jumpId, page?.loaded, ids.length]);
+
   function onScroll() {
     const el = scrollRef.current!;
     atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
@@ -124,17 +142,26 @@ function ConversationIntro({ conversation, currentUser }: { conversation: Conver
       </div>
     );
   }
-  const partner = dmPartnerId(conversation, currentUser.id);
+  const isSelf = conversation.kind === 'self';
+  const personId = isSelf ? currentUser.id : dmPartnerId(conversation, currentUser.id);
   const title = conversationTitle(conversation, members, currentUser);
   return (
     <div className="intro">
-      {partner ? <Avatar userId={partner} size={64} /> : <div className="intro-icon"><Icon name="users" size={28} /></div>}
-      <h2>{title}</h2>
-      <p className="muted">
-        {conversation.kind === 'self'
-          ? 'This is your space. Draft messages, keep links and notes to self.'
-          : `This is the very beginning of your conversation with ${title}.`}
+      <div className="intro-who">
+        {personId ? <Avatar userId={personId} size={116} /> : <div className="intro-icon"><Icon name="users" size={28} /></div>}
+        <h2>{title}{isSelf && ' (you)'}</h2>
+        {personId && <PresenceDot userId={personId} size={11} />}
+      </div>
+      <p className="intro-lead">
+        {isSelf
+          ? <><strong>This space is just for you.</strong> Park drafts, keep a running to-do list, and stash links and files you want close at hand. Nobody else can see what you put here.</>
+          : <>This is the start of your direct messages with <strong>{title}</strong>. Only the people in this conversation can see what's shared here.</>}
       </p>
+      {personId && (
+        <button className="btn btn-outline" onClick={() => useUi.getState().openRightPanel({ kind: 'profile', userId: personId })}>
+          {isSelf ? 'Edit profile' : 'View profile'}
+        </button>
+      )}
     </div>
   );
 }

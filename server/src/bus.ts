@@ -5,6 +5,7 @@ export type BusEventType =
   | 'member.joined' | 'member.left'
   | 'workspace.member_joined'
   | 'file.uploaded'
+  | 'file.deleted'
   | 'user.updated'
   | 'presence.changed'
   | 'huddle.started' | 'huddle.updated' | 'huddle.ended'

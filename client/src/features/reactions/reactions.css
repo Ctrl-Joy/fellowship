@@ -1,0 +1,49 @@
+/* Reactions: pills, "+" trigger, emoji picker. Colours come from theme.css tokens. */
+
+.reactions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
+.reaction {
+  display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px;
+  border-radius: 12px; border: 1px solid var(--border); background: var(--bg-subtle);
+  font-size: 13px; color: var(--fg);
+}
+.reaction:hover { border-color: var(--border-strong); }
+.reaction-mine { border-color: var(--brand); background: var(--brand-soft); }
+.reaction-emoji { font-size: 14px; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.reaction-count { font-weight: 600; font-size: 12px; }
+.reaction-add { width: 26px; justify-content: center; padding: 0; color: var(--fg-muted); font-size: 15px; line-height: 1; }
+
+/* Anchored at the "+" button's top edge (left/top set inline), opening upwards. */
+.reaction-pop { position: fixed; transform: translateY(-100%); z-index: 60; }
+
+/* Emoji picker */
+.epk {
+  width: 300px; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow);
+}
+.epk-search { padding: 8px 8px 4px; }
+.epk-input {
+  width: 100%; height: 30px; padding: 0 10px; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--fg); font: inherit; font-size: 13px;
+}
+.epk-input:focus { outline: 2px solid var(--focus); outline-offset: 0; }
+.epk-tabs { display: flex; gap: 2px; padding: 0 8px 4px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+.epk-tab { width: 30px; height: 28px; border-radius: 6px; font-size: 16px; flex: 0 0 auto; }
+.epk-tab:hover { background: var(--bg-hover); }
+.epk-body { height: 260px; overflow-y: auto; padding: 4px 8px 8px; }
+.epk-heading { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); margin: 8px 0 4px; }
+.epk-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+.epk-emoji {
+  height: 32px; font-size: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+.epk-emoji:hover, .epk-emoji.is-active { background: var(--bg-hover); }
+.epk-emoji.is-active { outline: 2px solid var(--brand); outline-offset: -2px; }
+.epk-empty { padding: 24px 8px; text-align: center; color: var(--fg-muted); font-size: 13px; }
+.epk-footer {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--fg-muted); min-height: 30px;
+}
+.epk-preview { font-size: 18px; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+
+/* :shortcode: rendered inline in messages */
+.emoji-inline { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: 1.15em; line-height: 1; }

@@ -14,13 +14,19 @@
   --sidebar-hover: rgba(255, 255, 255, 0.07);
   --sidebar-active: #1F6F5C;
   --rail-bg: #0C221D;
-  --topbar-bg: #0F2924;
+  --rail-tile: #2C4A43;
+  --rail-fg: #C9DDD6;
+  --topbar-bg: #0C221D;
+  --search-bg: rgba(255, 255, 255, 0.14);
+  --panel-border: #0C221D;
 
   --bg: #FFFFFF;
   --bg-subtle: #F6F8F7;
   --bg-hover: #F1F5F3;
   --bg-elevated: #FFFFFF;
+  --composer-bg: #FFFFFF;
   --fg: #1B2421;
+  --fg-strong: #0F1513;
   --fg-muted: #5F6E69;
   --fg-faint: #8B9893;
   --border: #E1E7E4;
@@ -35,11 +41,12 @@
 
   --radius: 8px;
   --radius-sm: 5px;
-  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font: 'Lato', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, Menlo, monospace;
   color-scheme: light;
 }
 
+/* Dark: neutral near-black surfaces (rail #16161A, sidebar #121416, main #1A1E22, composer #22262A). */
 :root[data-theme='dark'] {
   --brand: #2A8C74;
   --brand-strong: #34A086;
@@ -49,27 +56,34 @@
   --mention: #E8675D;
   --mention-soft: #44231F;
 
-  --sidebar-bg: #0E1F1B;
-  --sidebar-fg: #A9C2BA;
+  --sidebar-bg: #121416;
+  --sidebar-fg: #B1B3B4;
+  --sidebar-fg-strong: #F3F5F7;
   --sidebar-hover: rgba(255, 255, 255, 0.06);
-  --sidebar-active: #1F6F5C;
-  --rail-bg: #08140F;
-  --topbar-bg: #0A1814;
+  --sidebar-active: #40444A;
+  --rail-bg: #16161A;
+  --rail-tile: #383C3F;
+  --rail-fg: #ABADAE;
+  --topbar-bg: #16161A;
+  --search-bg: #48484C;
+  --panel-border: #2A2E32;
 
-  --bg: #161B1A;
-  --bg-subtle: #1C2220;
-  --bg-hover: #212927;
-  --bg-elevated: #1F2624;
-  --fg: #E3E9E7;
-  --fg-muted: #9DABA6;
-  --fg-faint: #75837E;
-  --border: #2B3431;
-  --border-strong: #3A4542;
-  --link: #6CB8E6;
+  --bg: #1A1E22;
+  --bg-subtle: #1E2226;
+  --bg-hover: #22262A;
+  --bg-elevated: #22262A;
+  --composer-bg: #22262A;
+  --fg: #D4D8DB;
+  --fg-strong: #F8FAFB;
+  --fg-muted: #A0A2A6;
+  --fg-faint: #75787C;
+  --border: #2A2E32;
+  --border-strong: #3A3E43;
+  --link: #529CBA;
   --highlight: #33301F;
   --pinned-bg: #2A2618;
-  --code-bg: #232B29;
-  --code-fg: #F08DA3;
+  --code-bg: #22262A;
+  --code-fg: #E8912D;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
   --focus: 0 0 0 3px rgba(52, 160, 134, 0.4);
   color-scheme: dark;

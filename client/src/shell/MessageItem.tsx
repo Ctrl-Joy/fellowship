@@ -15,6 +15,8 @@ import EmojiPicker from '../features/reactions/EmojiPicker';
 import { toggleReaction } from '../features/reactions/api';
 import Attachments from '../features/files/Attachments';
 import WorkflowMessageParts from '../features/workflows/WorkflowMessageParts';
+import CanvasShareCard from '../features/canvases/CanvasShareCard';
+import AppMessageParts from '../features/apps/AppMessageParts';
 
 export interface MessageItemProps {
   message: Message;
@@ -67,7 +69,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
         <div className="msg-main">
           {showHeader && (
             <div className="msg-meta">
-              <button className="msg-author" onClick={() => openPanel({ kind: 'profile', userId: m.userId })}>{displayName(author)}</button>
+              <button className="msg-author" onClick={() => openPanel({ kind: 'profile', userId: m.userId })}>{m.meta?.override?.username ?? displayName(author)}</button>
               {author?.isBot && <span className="badge-app">APP</span>}
               {author?.statusEmoji && <span title={author.statusText}>{author.statusEmoji}</span>}
               <time className="msg-time" title={formatFull(m.createdAt)}>{formatTime(m.createdAt)}</time>
@@ -82,7 +84,9 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
             </div>
           )}
           <Attachments message={m} files={m.files} />
+          <CanvasShareCard message={m} />
           <WorkflowMessageParts message={m} conversation={conversation} currentUser={currentUser} />
+          <AppMessageParts message={m} conversation={conversation} currentUser={currentUser} />
           <ReactionBar message={m} conversation={conversation} currentUser={currentUser} />
           {m.failed && (
             <div className="msg-error">
@@ -95,7 +99,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
 
       {!temp && !editing && (
         <div className={`msg-toolbar${picker ? ' open' : ''}`} role="toolbar">
-          <button className="icon-btn" title="Add reaction" onClick={() => setPicker((v) => !v)}><Icon name="smile" size={16} /></button>
+          <button className="icon-btn" title="Add reaction" data-emoji-trigger onClick={() => setPicker((v) => !v)}><Icon name="smile" size={16} /></button>
           {canReplyHere && <button className="icon-btn" title="Reply in thread" onClick={openThread}><Icon name="thread" size={16} /></button>}
           <button className={`icon-btn${m.saved ? ' active' : ''}`} title={m.saved ? 'Remove from saved' : 'Save for later'} onClick={() => toggleSave(m)}><Icon name="bookmark" size={16} /></button>
           {conversation.isMember && <button className={`icon-btn${m.pinned ? ' active' : ''}`} title={m.pinned ? 'Unpin' : 'Pin to conversation'} onClick={() => togglePin(m)}><Icon name="pin" size={16} /></button>}

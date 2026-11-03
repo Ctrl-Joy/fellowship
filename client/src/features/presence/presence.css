@@ -1,0 +1,52 @@
+/* Presence dots, status editor and profile panel. */
+
+.presence-dot {
+  display: inline-block;
+  border-radius: 50%;
+  flex: none;
+  box-sizing: border-box;
+  --presence-active: #2E9E5B;
+  --presence-ring: var(--bg);
+  box-shadow: 0 0 0 2px var(--presence-ring);
+}
+.presence-dot.presence-active { background: var(--presence-active); }
+.presence-dot.presence-away {
+  background: var(--presence-ring);
+  border: 2px solid var(--fg-faint);
+}
+.avatar-wrap > .presence-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+}
+.sb-item .presence-dot { --presence-ring: var(--sidebar-bg); }
+.sb-item.active .presence-dot { --presence-ring: var(--sidebar-active); }
+
+.presence-line { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--fg-muted); }
+
+/* Status editor */
+.status-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 14px; }
+.status-preset {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--bg-subtle); font-size: 13px; color: var(--fg);
+}
+.status-preset:hover { border-color: var(--brand); }
+.status-row { display: flex; gap: 8px; align-items: center; }
+.status-expiry { display: grid; gap: 6px; margin-top: 14px; }
+.status-expiry label { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.status-presence { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+.status-presence label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+
+/* Profile panel */
+.profile-head { display: flex; align-items: center; gap: 8px; }
+.profile-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.profile-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.profile-local-time { display: flex; gap: 6px; align-items: center; }
+.profile-status-until { font-size: 12px; color: var(--fg-faint); margin-left: 6px; }
+
+/* Edit profile modal */
+.edit-avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.edit-grid .span-2 { grid-column: span 2; }
+@media (max-width: 560px) { .edit-grid { grid-template-columns: 1fr; } .edit-grid .span-2 { grid-column: auto; } }
+.edit-error { color: var(--mention); font-size: 13px; margin-top: 10px; }
