@@ -5,11 +5,11 @@
 @tailwind utilities;
 
 /* Scoped to the landing page so the app keeps its own fonts. */
-.lithos, .lithos * { font-family: 'Inter', sans-serif; }
-.lithos .font-playfair { font-family: 'Playfair Display', serif; }
-.lithos h1, .lithos p { margin: 0; }
-.lithos button { border: 0; cursor: pointer; }
-.lithos .font-semibold { font-weight: 600; }
+.spot, .spot * { font-family: 'Inter', sans-serif; }
+.spot .font-playfair { font-family: 'Playfair Display', serif; }
+.spot h1, .spot p { margin: 0; }
+.spot button { border: 0; cursor: pointer; }
+.spot .font-semibold { font-weight: 600; }
 
 @keyframes heroReveal { 0% { opacity: 0; transform: translateY(28px); filter: blur(12px) } 100% { opacity: 1; transform: translateY(0); filter: blur(0) } }
 @keyframes heroFadeUp { 0% { opacity: 0; transform: translateY(20px) } 100% { opacity: 1; transform: translateY(0) } }

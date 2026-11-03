@@ -2,7 +2,7 @@
  *  which has its own hand-written CSS, is untouched. */
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/pages/LithosLanding.tsx'],
+  content: ['./src/pages/SpotlightLanding.tsx'],
   corePlugins: { preflight: false },
   theme: { extend: {} },
   plugins: [],

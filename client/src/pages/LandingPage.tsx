@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { LogoMark } from '../components/Logo';
 import { Avatar } from './fly/Avatar';
 import { BoardScene, HuddleScene, IntegrationWindows, RoutinesStack, TalkPhone } from './fly/Scenes';
@@ -18,6 +18,14 @@ const DEPTH = Array.from({ length: RING }, (_, i) => 0.45 + ((i * 7919) % 100) /
  */
 export function LandingPage() {
   const root = useRef<HTMLDivElement>(null);
+  const { hash } = useLocation();
+
+  // Deep links like /welcome/scenes#projects: the router doesn't scroll to hashes, so do it here.
+  useEffect(() => {
+    if (!hash) return;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target) requestAnimationFrame(() => window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY, behavior: 'instant' as ScrollBehavior }));
+  }, [hash]);
 
   useEffect(() => {
     const el = root.current!;
@@ -140,6 +148,9 @@ export function LandingPage() {
       </section>
 
       <section className="fy-features" id="messaging">
+        {/* Scenes are pinned, so deep links land where each scene is shown (its share of the scroll). */}
+        <span id="workflows" className="fy-anchor" style={{ top: '27%' }} />
+        <span id="projects" className="fy-anchor" style={{ top: '48%' }} />
         <div className="fy-features-stage">
           <div className="fy-ftexts">
             {FEATURES.map((f, i) => (
@@ -153,8 +164,8 @@ export function LandingPage() {
           </div>
           <div className="fy-fscenes" aria-hidden="true">
             <div className="fy-fscene on"><TalkPhone step={0} /></div>
-            <div className="fy-fscene" id="workflows"><RoutinesStack /></div>
-            <div className="fy-fscene" id="projects"><BoardScene /></div>
+            <div className="fy-fscene"><RoutinesStack /></div>
+            <div className="fy-fscene"><BoardScene /></div>
             <div className="fy-fscene"><HuddleScene /></div>
           </div>
         </div>

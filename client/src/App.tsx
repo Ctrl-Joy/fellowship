@@ -11,7 +11,7 @@ import { WorkspacePage } from './pages/WorkspacePage';
 import { LandingPage } from './pages/LandingPage';
 import { OrbitLanding } from './pages/OrbitLanding';
 import { EditionsLanding } from './pages/EditionsLanding';
-import { LithosLanding } from './pages/LithosLanding';
+import { SpotlightLanding } from './pages/SpotlightLanding';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const me = useSession((s) => s.me);
@@ -51,11 +51,11 @@ export function App() {
         <Route path="/workspaces" element={<RequireAuth><WorkspacesPage /></RequireAuth>} />
         <Route path="/join/:code" element={<RequireAuth><JoinPage /></RequireAuth>} />
         <Route path="/w/:wid/*" element={<RequireAuth><WorkspacePage /></RequireAuth>} />
-        <Route path="/welcome" element={<LithosLanding />} />
+        <Route path="/welcome" element={<SpotlightLanding />} />
         <Route path="/welcome/scenes" element={<LandingPage />} />
         <Route path="/welcome/orbit" element={<OrbitLanding />} />
         <Route path="/welcome/editions" element={<EditionsLanding />} />
-        <Route path="/" element={me ? <Home /> : <LithosLanding />} />
+        <Route path="/" element={me ? <Home /> : <SpotlightLanding />} />
         <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
       </Routes>
     </BrowserRouter>
