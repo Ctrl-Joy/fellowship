@@ -10,6 +10,7 @@ import { JoinPage, WorkspacesPage } from './pages/WorkspacesPage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { LandingPage } from './pages/LandingPage';
 import { OrbitLanding } from './pages/OrbitLanding';
+import { EditionsLanding } from './pages/EditionsLanding';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const me = useSession((s) => s.me);
@@ -51,6 +52,7 @@ export function App() {
         <Route path="/w/:wid/*" element={<RequireAuth><WorkspacePage /></RequireAuth>} />
         <Route path="/welcome" element={<LandingPage />} />
         <Route path="/welcome/orbit" element={<OrbitLanding />} />
+        <Route path="/welcome/editions" element={<EditionsLanding />} />
         <Route path="/" element={me ? <Home /> : <LandingPage />} />
         <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
       </Routes>

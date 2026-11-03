@@ -1,203 +1,240 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { LogoMark } from '../components/Logo';
-import { CATEGORIES, START_COLOR, STATS, TAGLINE } from './landing/content';
-import { NetworkMap, type DiveState } from './landing/NetworkMap';
-import { Scene } from './landing/Scenes';
-import { HubBurst } from './landing/HubBurst';
-import '../styles/editions.css';
+import { Avatar } from './fly/Avatar';
+import { BoardScene, HuddleScene, IntegrationWindows, RoutinesStack, TalkPhone } from './fly/Scenes';
+import { FEATURES, FOOTER, HERO, INTEGRATIONS, STATEMENT, TEMPLATES, USE_CASES } from './fly/content';
+import '../styles/fly.css';
 
-/** Highlight colour for the one emphasised spoke in each interlude. */
-const ACCENTS = ['#7CFFC4', '#FFD27A', '#9DB4FF', '#FF9DBB'];
-
-const hex = (c: string) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
-const mix = (a: number[], b: number[], t: number) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+const RING = 18;
+const clamp = (v: number) => Math.min(1, Math.max(0, v));
+// Per-card depth for the fly-out: deeper cards rush past the viewer faster and grow larger.
+const DEPTH = Array.from({ length: RING }, (_, i) => 0.45 + ((i * 7919) % 100) / 100 * 1.25);
 
 /**
- * Fellowship landing: a giant wordmark hero with a live network panel, then one section per product
- * area. The page colour blends from area to area as each section scrolls in.
+ * Fellowship landing. Pinned scroll scenes: a ring of teammates that turns and then scatters past the
+ * viewer while a statement fills in; feature scenes that change as you scroll; an integrations hub; then
+ * templates, use cases and a finale. One scroll handler (writes only on change) + one ring animation loop.
  */
 export function LandingPage() {
   const root = useRef<HTMLDivElement>(null);
-  const nav = useRef<HTMLElement>(null);
-  const rail = useRef<HTMLElement>(null);
-  const hero = useRef<HTMLElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
-  const layer = useRef<HTMLDivElement>(null);
-  const dive = useRef<DiveState>({ p: 0, page: hex(START_COLOR) as [number, number, number], view: { t: 0, r: 0, b: 0, l: 0 } });
 
   useEffect(() => {
     const el = root.current!;
-    const sections = [...el.querySelectorAll<HTMLElement>('[data-ed-section]')];
-    const interludes = [...el.querySelectorAll<HTMLElement>('.ed-interlude')];
-    const colors = CATEGORIES.map((c) => hex(c.color));
-    // Cards and notes fade up the first time they scroll into view.
-    const reveal = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
-    }, { rootMargin: '0px 0px -12% 0px' });
-    el.querySelectorAll('.ed-reveal').forEach((n) => reveal.observe(n));
-    const railButtons = [...rail.current!.querySelectorAll('button')];
-    const fadeAway = [...el.querySelectorAll<HTMLElement>('.ed-dive-away')];
-    let lastActive = -2, lastScrolled: boolean | null = null, lastBg = '', lastNavO = '';
-    // Reads first, then writes, and no inherited custom properties on big subtrees: each scroll frame
-    // touches only the few elements that actually change, so style recalc stays tiny.
-    const update = () => {
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const $ = <T extends Element>(s: string) => el.querySelector<T>(s)!;
+    const $$ = <T extends Element>(s: string) => [...el.querySelectorAll<T>(s)];
+    const nav = $<HTMLElement>('.fy-nav');
+    const hero = $<HTMLElement>('.fy-hero'), heroCopy = $<HTMLElement>('.fy-hero-copy');
+    const cards = $$<HTMLElement>('.fy-orb'), words = $$<HTMLElement>('.fy-statement span'), statement = $<HTMLElement>('.fy-statement');
+    const feat = $<HTMLElement>('.fy-features'), ftexts = $$<HTMLElement>('.fy-ftext'), fscenes = $$<HTMLElement>('.fy-fscene');
+    const pills = $$<HTMLElement>('.fy-pill');
+    const integ = $<HTMLElement>('.fy-integrations'), wins = $$<HTMLElement>('.fy-win');
+    const phone = { step: -1 };
+    const state = { heroP: 0, q: 0, scene: -1, talk: -1, wins: -1, navOn: false, words: -1 };
+
+    const reveal = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px' });
+    $$('.fy-reveal').forEach((n) => reveal.observe(n));
+
+    const progressOf = (sec: HTMLElement, vh: number) => { const r = sec.getBoundingClientRect(); return clamp(-r.top / (r.height - vh)); };
+
+    const onScroll = () => {
       const vh = window.innerHeight;
-      // Each section's progress runs 0→1 as its top travels from the bottom of the viewport to the middle,
-      // and the page colour is mixed through every section in order (like a chain of colour-mix steps).
-      let c = hex(START_COLOR);
-      let current = -1;
-      sections.forEach((s, i) => {
-        const top = s.getBoundingClientRect().top;
-        // Measured on the reference: each colour step runs over the first 360px after the section enters.
-        const p = Math.min(1, Math.max(0, (vh - top) / 360));
-        c = mix(c, colors[i], p);
-        if (top < vh * 0.5) current = i;
-      });
-      const bg = `rgb(${c.join(',')})`;
-      // Hero dive (desktop): the map's clip opens from the panel's box to the whole screen while the
-      // wordmark and index slide away; the map itself zooms into the first hub (see NetworkMap).
-      const desktop = window.matchMedia('(min-width: 961px)').matches;
-      const st = stage.current!, pn = panel.current!, ly = layer.current!;
-      let p = 0;
-      if (desktop) {
-        const hr = hero.current!.getBoundingClientRect();
-        p = Math.min(1, Math.max(0, -hr.top / (hr.height - vh)));
-        const sr = st.getBoundingClientRect(), pr = pn.getBoundingClientRect();
-        const k = 1 - p * p * (3 - 2 * p);
-        const v = { t: (pr.top - sr.top) * k, r: (sr.right - pr.right) * k, b: (sr.bottom - pr.bottom) * k, l: (pr.left - sr.left) * k };
-        ly.style.cssText = `clip-path: inset(${v.t}px ${v.r}px ${v.b}px ${v.l}px)`;
-        dive.current.view = v;
-        for (const f of fadeAway) { f.style.opacity = String(Math.max(0, 1 - (1 - k) * 1.8)); f.style.transform = `translate3d(${-(1 - k) * 90}px, 0, 0)`; }
-      } else {
-        ly.style.cssText = `top: ${pn.offsetTop}px; left: ${pn.offsetLeft}px; width: ${pn.offsetWidth}px; height: ${pn.offsetHeight}px; clip-path: none`;
-        dive.current.view = { t: 0, r: 0, b: 0, l: 0 };
-        for (const f of fadeAway) { f.style.opacity = ''; f.style.transform = ''; }
+      // --- reads ---
+      const heroP = progressOf(hero, vh), featP = progressOf(feat, vh), intP = progressOf(integ, vh);
+      // --- writes (only when something actually changed) ---
+      const navOn = window.scrollY > 20;
+      if (navOn !== state.navOn) { state.navOn = navOn; nav.classList.toggle('solid', navOn); }
+
+      state.heroP = heroP;
+      state.q = reduce ? 0 : clamp((heroP - 0.28) / 0.62);
+      heroCopy.style.opacity = String(1 - clamp((heroP - 0.18) / 0.14));
+      heroCopy.style.transform = `translate3d(0, ${-clamp((heroP - 0.18) / 0.14) * 30}px, 0)`;
+      // Statement words light up one by one as the cards scatter.
+      const lit = reduce ? words.length : Math.floor(clamp((heroP - 0.35) / 0.5) * (words.length + 1));
+      if (lit !== state.words) { state.words = lit; words.forEach((w, i) => w.classList.toggle('lit', i < lit)); }
+      statement.style.opacity = String(reduce ? 1 : clamp((heroP - 0.3) / 0.08));
+
+      // Features: four scenes across the pinned section; the first one steps through three conversation styles.
+      const scene = Math.min(FEATURES.length - 1, Math.floor(featP * FEATURES.length));
+      if (scene !== state.scene) {
+        state.scene = scene;
+        ftexts.forEach((t, i) => t.classList.toggle('on', i === scene));
+        fscenes.forEach((s, i) => s.classList.toggle('on', i === scene));
       }
-      if (bg !== lastBg) { lastBg = bg; el.style.backgroundColor = bg; nav.current!.style.setProperty('--ed-page', bg); }
-      dive.current.p = p;
-      dive.current.page = c as [number, number, number];
-      // Interlude progress: 0 when it enters from below, 1 once its sticky stage has been fully scrolled.
-      for (const it of interludes) {
-        const r = it.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height)));
-        const ps = p.toFixed(3);
-        if (it.dataset.progress === ps) continue; // off-screen interludes stay untouched
-        it.dataset.progress = ps;
-        // The heading is only on screen once the stage pins (~66%), so the letter fill runs from there.
-        it.style.setProperty('--p', Math.min(1, Math.max(0, (p - 0.66) / 0.29)).toFixed(3));
+      const talk = scene === 0 ? Math.min(2, Math.floor((featP * FEATURES.length) * 3)) : state.talk;
+      if (talk !== state.talk) {
+        state.talk = talk;
+        pills.forEach((p, i) => p.classList.toggle('on', i === talk));
+        if (phone.step !== talk) { phone.step = talk; $$<HTMLElement>('.fy-phone-screen').forEach((s, i) => s.classList.toggle('on', i === talk)); }
       }
-      if (current !== lastActive) {
-        lastActive = current;
-        railButtons.forEach((b, i) => b.classList.toggle('on', i === current));
-        rail.current!.classList.toggle('shown', current >= 0);
-      }
-      // Nav underlay fades in over the first 32px of scroll.
-      const navO = Math.min(1, window.scrollY / 32).toFixed(2);
-      if (navO !== lastNavO) { lastNavO = navO; nav.current!.style.setProperty('--nav-o', navO); }
-      const scrolled = window.scrollY > 8;
-      if (scrolled !== lastScrolled) { lastScrolled = scrolled; nav.current!.classList.toggle('scrolled', scrolled); }
+      // Integrations: windows slide in one by one.
+      const shown = Math.floor(clamp((intP - 0.1) / 0.6) * (wins.length + 0.999));
+      if (shown !== state.wins) { state.wins = shown; wins.forEach((w, i) => w.classList.toggle('in', i < shown)); }
+      integ.style.setProperty('--ip', intP.toFixed(3));
     };
-    // Run straight from the scroll event: it's a handful of rect reads, and waiting a frame lags the fill.
-    const onScroll = () => update();
-    update();
+
+    // Ring: turns slowly on its own and with scroll; then each card flies outward by its own depth.
+    let raf = 0, visible = true;
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) raf = requestAnimationFrame(tick); });
+    io.observe(hero);
+    function tick(now: number) {
+      raf = 0;
+      if (!visible) return;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const R = Math.min(vw * 0.4, vh * 0.38, 360);
+      const rot = (reduce ? 0 : now * 0.00004) + state.heroP * 1.4;
+      const q = state.q, qq = q * q;
+      for (let i = 0; i < RING; i++) {
+        const a = (i / RING) * Math.PI * 2 + rot - Math.PI / 2;
+        const d = DEPTH[i];
+        const rad = R * (1 + qq * 3.2 * d);
+        const s = 1 + qq * 2.4 * d;
+        const o = q < 0.8 ? 1 : 1 - (q - 0.8) / 0.2;
+        const c = cards[i];
+        c.style.transform = `translate3d(${Math.cos(a) * rad}px, ${Math.sin(a) * rad * 0.96}px, 0) scale(${s})`;
+        c.style.opacity = String(o);
+      }
+      if (!reduce) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); reveal.disconnect(); };
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(raf); io.disconnect(); reveal.disconnect();
+    };
   }, []);
 
-  const jump = (id: string) => document.getElementById(`ed-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
   return (
-    <div className="ed" ref={root}>
-      <header className="ed-nav" ref={nav}>
-        <Link to="/welcome" className="ed-brand">
-          <LogoMark size={26} />
-          <span><b>Fellowship</b><small>What's new</small></span>
-        </Link>
-        <nav className="ed-nav-links">
-          <button onClick={() => jump(CATEGORIES[0].id)}>Features</button>
-          <Link to="/welcome/orbit">Tour</Link>
-        </nav>
-        <div className="ed-nav-cta">
-          <Link to="/login" className="ed-signin">Sign in</Link>
-          <Link to="/signup" className="ed-pill">Get started</Link>
+    <div className="fy" ref={root}>
+      <nav className="fy-nav">
+        <Link to="/welcome" className="fy-brand"><LogoMark size={26} /> Fellowship</Link>
+        <div className="fy-menu">
+          {['Messaging', 'Workflows', 'Projects', 'Apps', 'Self-host'].map((m) => <a key={m} href={`#${m.toLowerCase()}`}>{m}</a>)}
         </div>
-      </header>
+        <div className="fy-nav-right">
+          <Link to="/login" className="fy-login">Log in</Link>
+          <Link to="/signup" className="fy-btn">{HERO.cta}</Link>
+        </div>
+      </nav>
 
-      <section className="ed-hero" ref={hero} aria-labelledby="ed-title">
-        <div className="ed-hero-stage" ref={stage}>
-        <div className="ed-word-col ed-dive-away">
-          <h1 id="ed-title" className="ed-word">Fellowship</h1>
-          <p className="ed-tagline">{TAGLINE}</p>
-        </div>
-        <aside className="ed-side ed-dive-away">
-          <ol className="ed-index">
-            {CATEGORIES.map((c, i) => (
-              <li key={c.id}><button onClick={() => jump(c.id)}><span>{c.name}</span><span>{String(i + 1).padStart(2, '0')}</span></button></li>
-            ))}
-          </ol>
-          {STATS.map((s) => (
-            <div key={s.label} className="ed-stat"><b>{s.value}</b><p>{s.label}</p></div>
-          ))}
-        </aside>
-        <div className="ed-panel" ref={panel} />
-        <div className="ed-map-layer" ref={layer}><NetworkMap dive={dive} /></div>
+      <section className="fy-hero" aria-labelledby="fy-title">
+        <div className="fy-hero-stage">
+          <div className="fy-ring" aria-hidden="true">
+            {Array.from({ length: RING }, (_, i) => <div key={i} className="fy-orb"><Avatar seed={i * 3 + 1} /></div>)}
+          </div>
+          <div className="fy-hero-copy">
+            <h1 id="fy-title">{HERO.title[0]}<br />{HERO.title[1]}</h1>
+            <Link to="/signup" className="fy-btn fy-btn-lg">{HERO.cta}</Link>
+            <p className="fy-chaton">Works on {HERO.worksOn.map((w) => <span key={w}>{w}</span>)}</p>
+          </div>
+          <p className="fy-statement" aria-label={STATEMENT}>
+            {STATEMENT.split(' ').map((w, i) => <span key={i} aria-hidden="true">{w} </span>)}
+          </p>
+          <div className="fy-works">Works with <span>Webhooks</span><span>Bots</span><span>Slash commands</span><span>Events</span></div>
         </div>
       </section>
 
-      <div className="ed-body">
-        <nav className="ed-rail" ref={rail} aria-label="Sections">
-          {CATEGORIES.map((c) => (
-            <button key={c.id} onClick={() => jump(c.id)}>
-              <span className="ed-rail-dot" />{c.name}
-            </button>
-          ))}
-        </nav>
-        <main className="ed-sections">
-          {CATEGORIES.map((c, i) => (
-            <section key={c.id} id={`ed-${c.id}`} data-ed-section className="ed-section" aria-labelledby={`ed-h-${c.id}`}>
-              {/* Interlude: a close-up of this area's hub; the heading fills letter by letter as you scroll. */}
-              <div className="ed-interlude" data-progress="0">
-                <div className="ed-interlude-stage">
-                  <HubBurst seed={i + 1} accent={ACCENTS[i % ACCENTS.length]} />
-                  <h2 id={`ed-h-${c.id}`} className="ed-h2" aria-label={c.name}>
-                    <span className="ed-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="ed-fill" aria-hidden="true" style={{ '--n': c.name.length } as CSSProperties}>
-                      {[...c.name].map((ch, k) => <span key={k} style={{ '--i': k } as CSSProperties}>{ch}</span>)}
-                    </span>
-                  </h2>
-                </div>
+      <section className="fy-features" id="messaging">
+        <div className="fy-features-stage">
+          <div className="fy-ftexts">
+            {FEATURES.map((f, i) => (
+              <div key={f.key} className={`fy-ftext${i === 0 ? ' on' : ''}`}>
+                <h2>{f.title}</h2>
+                {f.pills && <div className="fy-pills">{f.pills.map((p, k) => <span key={p} className={`fy-pill${k === 0 ? ' on' : ''}`}>{p}</span>)}</div>}
+                <p>{f.body}</p>
+                <Link to="/signup" className="fy-more">{f.cta} <span aria-hidden="true">→</span></Link>
               </div>
-              <div className={`ed-features${c.features.length > 1 ? ' two' : ''}`}>
-                {c.features.map((f) => (
-                  <article key={f.title} className="ed-feature ed-reveal">
-                    <div className="ed-feature-text">
-                      <h3><span className="ed-bullet" />{f.title}</h3>
-                      <p>{f.body}</p>
-                      <Link to="/signup" className="ed-mono-pill">{f.cta}</Link>
-                    </div>
-                    <Scene kind={f.scene} />
-                  </article>
-                ))}
-              </div>
-              <div className="ed-notes ed-reveal">
-                <p className="ed-notes-label">Also new</p>
-                <ul>{c.notes.map((n) => <li key={n}><span>+</span>{n}</li>)}</ul>
-              </div>
-            </section>
-          ))}
-        </main>
-      </div>
-
-      <footer className="ed-end">
-        <p className="ed-end-word">Fellowship</p>
-        <div className="ed-end-row">
-          <p>Bring the whole team. Self-hosted, no per-seat fees, everything in one place.</p>
-          <Link to="/signup" className="ed-pill ed-pill-lg">Get started free</Link>
+            ))}
+          </div>
+          <div className="fy-fscenes" aria-hidden="true">
+            <div className="fy-fscene on"><TalkPhone step={0} /></div>
+            <div className="fy-fscene" id="workflows"><RoutinesStack /></div>
+            <div className="fy-fscene" id="projects"><BoardScene /></div>
+            <div className="fy-fscene"><HuddleScene /></div>
+          </div>
         </div>
-      </footer>
+      </section>
+
+      <section className="fy-integrations" id="apps">
+        <div className="fy-int-stage">
+          <div className="fy-int-head">
+            <h2>{INTEGRATIONS.title}</h2>
+            <p>{INTEGRATIONS.body}</p>
+            <Link to="/signup" className="fy-more">{INTEGRATIONS.cta} <span aria-hidden="true">→</span></Link>
+          </div>
+          <div className="fy-hub" aria-hidden="true">
+            <span className="fy-orbit o1" /><span className="fy-orbit o2" /><span className="fy-orbit o3" />
+            <div className="fy-hub-core"><LogoMark size={44} framed={false} /></div>
+            <IntegrationWindows />
+          </div>
+        </div>
+      </section>
+
+      <section className="fy-templates">
+        <h2 className="fy-reveal">Start with a template</h2>
+        <p className="fy-sub fy-reveal">Get going in minutes with ready-made workflows, canvases and apps.</p>
+        <div className="fy-tgrid">
+          {TEMPLATES.map((t, i) => (
+            <article key={t.title} className="fy-tcard fy-reveal" style={{ transitionDelay: `${(i % 4) * 0.06}s` }}>
+              <div className="fy-tcard-top"><Avatar seed={i * 5 + 2} className="fy-tcard-av" /><span className="fy-plus">+</span></div>
+              <h3>{t.title}</h3>
+              <p>{t.body}</p>
+              <span className="fy-kind">{t.kind}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="fy-uses" id="self-host">
+        <h2 className="fy-reveal">How teams use Fellowship</h2>
+        <div className="fy-lead fy-reveal">
+          <Avatar seed={40} className="fy-lead-av" />
+          <div>
+            <p className="fy-lead-quote">{USE_CASES.lead.text}</p>
+            <p className="fy-lead-team">{USE_CASES.lead.team} <span>· example workflow</span></p>
+          </div>
+        </div>
+        <div className="fy-marquee" aria-label="More examples">
+          <div className="fy-marquee-track">
+            {[...USE_CASES.cards, ...USE_CASES.cards].map((c, i) => (
+              <div key={i} className="fy-ucard" aria-hidden={i >= USE_CASES.cards.length}>
+                <b>{c.team}</b><p>{c.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="fy-finale">
+        <svg className="fy-landscape" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="fy-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#3B4C8C" /><stop offset="0.45" stopColor="#C77B8B" /><stop offset="0.75" stopColor="#F2B27A" /><stop offset="1" stopColor="#F7D6A0" />
+            </linearGradient>
+            <linearGradient id="fy-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0.55" stopColor="#101010" stopOpacity="0" /><stop offset="1" stopColor="#101010" /></linearGradient>
+          </defs>
+          <rect width="1440" height="720" fill="url(#fy-sky)" />
+          <path d="M0 470 L120 420 L260 455 L400 380 L560 440 L700 360 L860 430 L1010 370 L1160 430 L1300 390 L1440 420 L1440 720 L0 720 Z" fill="#7A6A8E" opacity="0.75" />
+          <path d="M0 540 L160 470 L320 520 L470 450 L640 520 L800 460 L980 525 L1140 470 L1300 520 L1440 480 L1440 720 L0 720 Z" fill="#4C4566" />
+          <path d="M0 610 L200 560 L380 600 L560 545 L760 605 L940 560 L1120 610 L1300 570 L1440 600 L1440 720 L0 720 Z" fill="#2A2738" />
+          <rect width="1440" height="720" fill="url(#fy-fade)" />
+        </svg>
+        <div className="fy-finale-copy fy-reveal">
+          <h2>Gather your fellowship</h2>
+          <Link to="/signup" className="fy-btn fy-btn-dark">Get started <span aria-hidden="true">→</span></Link>
+        </div>
+        <footer className="fy-footer">
+          <div className="fy-foot-brand"><LogoMark size={34} /><p>Self-hosted team chat, calls, docs, workflows and projects.</p></div>
+          {FOOTER.map((c) => (
+            <div key={c.title} className="fy-foot-col"><h4>{c.title}</h4>{c.links.map((l) => <a key={l} href="#">{l}</a>)}</div>
+          ))}
+        </footer>
+      </section>
     </div>
   );
 }
