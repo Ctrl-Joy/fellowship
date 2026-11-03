@@ -51,6 +51,9 @@ export function WorkspaceRail({ currentUser }: { currentUser: User }) {
         <button className="rail-round" title={theme === 'dark' ? 'Light theme' : 'Dark theme'} onClick={toggleTheme}>
           <Icon name={theme === 'dark' ? 'moon' : 'sun'} size={20} />
         </button>
+        <button className="rail-round rail-signout" title="Sign out" aria-label="Sign out" onClick={async () => { await logout(); navigate('/login'); }}>
+          <Icon name="logout" size={19} />
+        </button>
         <div className="me-menu">
           <button className="rail-me" onClick={() => setMenu((v) => !v)} aria-label="Your account">
             <span className="avatar-wrap"><Avatar user={currentUser} size={40} /><PresenceDot userId={currentUser.id} size={11} /></span>

@@ -176,9 +176,11 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
 .rail-btn.active { color: var(--sidebar-fg-strong); }
 .rail-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 14px; align-items: center; }
 .rail-round { width: 40px; height: 40px; border-radius: 50%; background: var(--rail-tile); color: var(--rail-fg); display: flex; align-items: center; justify-content: center; }
+.rail-round.rail-signout:hover { background: var(--mention); color: #fff; filter: none; }
 .rail-round:hover { color: var(--sidebar-fg-strong); filter: brightness(1.2); }
 .rail-me .avatar { border-radius: 10px; }
-.menu-up { top: auto; bottom: 0; left: calc(100% + 10px); }
+/* Opens upward beside the rail; doubled class so it wins over .menu's default top/left. */
+.menu.menu-up { top: auto; bottom: 0; left: calc(100% + 10px); }
 .me-menu { position: relative; }
 
 .topbar { grid-area: top; background: var(--topbar-bg); display: flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; color: var(--fg); }
