@@ -57,7 +57,11 @@ interface Page {
 const MARK_RE = /\u0002([^\u0003]*)\u0003/g;
 
 /** Turn the server snippet (text with \u0002match\u0003 markers) into React nodes. Never HTML. */
-export function renderSnippet(text: string): ReactNode[] {
+export function renderSnippet(raw: string): ReactNode[] {
+  // Drop *bold* _italic_ ~strike~ `code` markers; the match markers count as word edges.
+  const text = raw
+    .replace(/(^|[\s(\u0002])[*_~`]+(?=[^\s*_~`])/g, '$1')
+    .replace(/([^\s*_~`])[*_~`]+(?=[\s.,;:!?)\u0003]|$)/g, '$1');
   const out: ReactNode[] = [];
   const re = new RegExp(MARK_RE.source, 'g');
   let last = 0;
