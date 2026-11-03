@@ -12,6 +12,7 @@ import { LandingPage } from './pages/LandingPage';
 import { OrbitLanding } from './pages/OrbitLanding';
 import { EditionsLanding } from './pages/EditionsLanding';
 import { SpotlightLanding } from './pages/SpotlightLanding';
+import { HeroLanding } from './pages/HeroLanding';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const me = useSession((s) => s.me);
@@ -51,11 +52,12 @@ export function App() {
         <Route path="/workspaces" element={<RequireAuth><WorkspacesPage /></RequireAuth>} />
         <Route path="/join/:code" element={<RequireAuth><JoinPage /></RequireAuth>} />
         <Route path="/w/:wid/*" element={<RequireAuth><WorkspacePage /></RequireAuth>} />
-        <Route path="/welcome" element={<SpotlightLanding />} />
+        <Route path="/welcome" element={<HeroLanding />} />
+        <Route path="/welcome/spotlight" element={<SpotlightLanding />} />
         <Route path="/welcome/scenes" element={<LandingPage />} />
         <Route path="/welcome/orbit" element={<OrbitLanding />} />
         <Route path="/welcome/editions" element={<EditionsLanding />} />
-        <Route path="/" element={me ? <Home /> : <SpotlightLanding />} />
+        <Route path="/" element={me ? <Home /> : <HeroLanding />} />
         <Route path="*" element={<RequireAuth><Home /></RequireAuth>} />
       </Routes>
     </BrowserRouter>
