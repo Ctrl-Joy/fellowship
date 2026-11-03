@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { Member, User } from '../../types';
 import { useSession } from '../../store/session';
-import { openDm } from '../../store/actions';
+import { logout, openDm } from '../../store/actions';
 import { Avatar } from '../../components/Avatar';
 import { Icon } from '../../components/Icon';
 import PresenceDot from './PresenceDot';
@@ -110,6 +110,9 @@ export default function ProfilePanel({ workspaceId, userId, currentUser, onClose
         {isMe && (
           <div className="profile-actions">
             <button className="btn" onClick={() => setEditing(true)}><Icon name="edit" size={14} /> Edit profile</button>
+            <button className="btn btn-signout" disabled={busy} onClick={async () => { setBusy(true); await logout(); navigate('/login'); }}>
+              <Icon name="logout" size={14} /> Sign out
+            </button>
           </div>
         )}
 

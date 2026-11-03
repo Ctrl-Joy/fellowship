@@ -68,7 +68,7 @@ export function WorkspaceRail({ currentUser }: { currentUser: User }) {
               <button onClick={() => { openRightPanel({ kind: 'profile', userId: currentUser.id }); setMenu(false); }}>Profile</button>
               <button onClick={() => { openModal({ kind: 'notificationPrefs' }); setMenu(false); }}>Preferences</button>
               <hr />
-              <button onClick={async () => { await logout(); navigate('/login'); }}>Sign out of Fellowship</button>
+              <button className="menu-signout" onClick={async () => { await logout(); navigate('/login'); }}><Icon name="logout" size={15} /> Sign out of Fellowship</button>
             </div>
           )}
         </div>
