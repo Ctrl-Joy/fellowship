@@ -1,0 +1,76 @@
+/* Fellowship design tokens. Brand: deep teal #1F6F5C, amber #F2A541, sidebar #12302A, mention #E2574C. */
+:root {
+  --brand: #1F6F5C;
+  --brand-strong: #185A4A;
+  --brand-soft: #E3F1EC;
+  --accent: #F2A541;
+  --accent-soft: #FDF1DE;
+  --mention: #E2574C;
+  --mention-soft: #FCE7E5;
+
+  --sidebar-bg: #12302A;
+  --sidebar-fg: #C9DDD6;
+  --sidebar-fg-strong: #FFFFFF;
+  --sidebar-hover: rgba(255, 255, 255, 0.07);
+  --sidebar-active: #1F6F5C;
+  --rail-bg: #0C221D;
+  --topbar-bg: #0F2924;
+
+  --bg: #FFFFFF;
+  --bg-subtle: #F6F8F7;
+  --bg-hover: #F1F5F3;
+  --bg-elevated: #FFFFFF;
+  --fg: #1B2421;
+  --fg-muted: #5F6E69;
+  --fg-faint: #8B9893;
+  --border: #E1E7E4;
+  --border-strong: #C9D3CF;
+  --link: #1A6B9A;
+  --highlight: #FFF6E3;
+  --pinned-bg: #FFF8EA;
+  --code-bg: #F2F4F3;
+  --code-fg: #B23C55;
+  --shadow: 0 8px 28px rgba(14, 35, 30, 0.16), 0 1px 3px rgba(14, 35, 30, 0.1);
+  --focus: 0 0 0 3px rgba(31, 111, 92, 0.3);
+
+  --radius: 8px;
+  --radius-sm: 5px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, Menlo, monospace;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --brand: #2A8C74;
+  --brand-strong: #34A086;
+  --brand-soft: #173C33;
+  --accent: #F2A541;
+  --accent-soft: #3A2E1A;
+  --mention: #E8675D;
+  --mention-soft: #44231F;
+
+  --sidebar-bg: #0E1F1B;
+  --sidebar-fg: #A9C2BA;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: #1F6F5C;
+  --rail-bg: #08140F;
+  --topbar-bg: #0A1814;
+
+  --bg: #161B1A;
+  --bg-subtle: #1C2220;
+  --bg-hover: #212927;
+  --bg-elevated: #1F2624;
+  --fg: #E3E9E7;
+  --fg-muted: #9DABA6;
+  --fg-faint: #75837E;
+  --border: #2B3431;
+  --border-strong: #3A4542;
+  --link: #6CB8E6;
+  --highlight: #33301F;
+  --pinned-bg: #2A2618;
+  --code-bg: #232B29;
+  --code-fg: #F08DA3;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --focus: 0 0 0 3px rgba(52, 160, 134, 0.4);
+  color-scheme: dark;
+}
