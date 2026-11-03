@@ -84,15 +84,38 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
 .wordmark { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.01em; color: var(--fg); }
 
 /* ---------- auth & landing ---------- */
-.auth { min-height: 100%; display: grid; grid-template-columns: 1fr 1fr; }
-.auth-brand {
-  background: radial-gradient(circle at 20% 20%, #2A8C74 0, transparent 50%), radial-gradient(circle at 80% 90%, rgba(242,165,65,0.35) 0, transparent 45%), var(--sidebar-bg);
-  color: #fff; display: flex; flex-direction: column; justify-content: center; padding: 64px; gap: 16px;
+/* Sign-in screens share the landing page's theme: dark page, red-orange accent, halftone wordmark. */
+.auth {
+  --bg: #121212; --bg-subtle: #171715; --bg-hover: #23221f; --bg-elevated: #1a1a17;
+  --fg: #F2EEEC; --fg-strong: #ffffff; --fg-muted: #A8A29E; --fg-faint: #7a7470;
+  --border: rgba(255, 255, 255, 0.08); --border-strong: rgba(255, 255, 255, 0.16);
+  --brand: #FA4C0D; --brand-strong: #FF6328; --link: #FF7A45; --accent: #FA4C0D;
+  --focus: 0 0 0 3px rgba(250, 76, 13, 0.3); --radius-sm: 10px;
+  min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; background: var(--bg); color: var(--fg);
+  font-family: 'Inter', 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
 }
-.auth-brand h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; }
-.auth-brand p { font-size: 19px; max-width: 420px; color: #CFE4DC; margin: 0; }
+.auth a { color: var(--link); }
+.auth .input { background: var(--bg-elevated); color: var(--fg); height: 44px; }
+.auth .btn { background: transparent; color: var(--fg); }
+.auth .btn-primary, .auth .btn-lg { border-radius: 999px; }
+.auth .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 6px 24px -8px rgba(250, 76, 13, 0.7); }
+.auth .btn-primary:hover:not(:disabled) { background: var(--brand-strong); }
+.auth-brand {
+  position: relative; overflow: hidden; isolation: isolate; border-right: 1px solid var(--border);
+  background: radial-gradient(circle at 50% 50%, rgba(250, 76, 13, 0.12), transparent 60%), #121212;
+  color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 64px; gap: 18px; text-align: center;
+}
+.auth-home { position: absolute; top: 22px; left: 28px; display: inline-flex; align-items: center; gap: 10px; color: #F2EEEC !important; text-decoration: none !important; font-weight: 700; font-size: 13px; letter-spacing: 0.24em; }
+.auth-words { display: flex; flex-direction: column; align-items: center; font-family: 'Inter Tight', 'Inter', Arial, sans-serif; font-weight: 800; letter-spacing: -0.055em; line-height: 0.86; font-size: clamp(48px, 7.6vw, 120px); white-space: nowrap; }
+.auth-words .auth-ghost {
+  color: transparent;
+  background: radial-gradient(circle, rgba(250, 76, 13, 0.36) 0.7px, transparent 1.1px) 0 0 / 3px 3px, linear-gradient(#2A1C14, #2A1C14);
+  -webkit-background-clip: text; background-clip: text;
+}
+.auth-words h1 { color: #FA4C0D; font-size: inherit; font-weight: inherit; letter-spacing: inherit; line-height: inherit; margin: 0; }
+.auth-brand p { font-size: 16px; line-height: 1.55; max-width: 380px; color: #A8A29E; margin: 12px 0 0; }
 .auth-card { align-self: center; justify-self: center; width: min(400px, 90%); display: flex; flex-direction: column; gap: 16px; }
-.auth-card h2 { font-size: 26px; margin-bottom: 4px; }
+.auth-card h2 { font-size: 30px; font-weight: 400; letter-spacing: -0.02em; margin-bottom: 4px; color: var(--fg-strong); }
 .auth-lead { margin: -6px 0 0; line-height: 1.5; }
 .auth-email { color: var(--fg); word-break: break-all; }
 .auth-actions { justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -439,6 +462,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
   .conv-topic, .composer-hint { display: none; }
   .composer-bar { justify-content: space-between; }
   .auth { grid-template-columns: 1fr; }
-  .auth-brand { padding: 32px; }
+  .auth-brand { padding: 72px 24px 36px; border-right: 0; border-bottom: 1px solid var(--border); }
+  .auth-card { padding: 32px 0 48px; }
   .landing-grid { grid-template-columns: 1fr; }
 }

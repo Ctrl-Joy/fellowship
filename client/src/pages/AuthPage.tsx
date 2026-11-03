@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { api, ApiError } from '../api';
 import { useSession } from '../store/session';
-import { LogoMark } from '../components/Logo';
 import type { User } from '../types';
 
 /** Brand panel + form card shared by every sign-in screen. */
@@ -10,9 +9,18 @@ export function AuthShell({ children, onSubmit }: { children: ReactNode; onSubmi
   return (
     <div className="auth">
       <div className="auth-brand">
-        <LogoMark size={56} />
-        <h1>Fellowship</h1>
-        <p>Where your team talks, decides and gets things done — together.</p>
+        <Link to="/" className="auth-home" aria-label="Fellowship home">
+          <svg width="26" height="23" viewBox="4 3 56 50" fill="none" stroke="#FA4C0D" strokeWidth="6" aria-hidden="true">
+            <circle cx="32" cy="20" r="11" /><circle cx="23" cy="36" r="11" /><circle cx="41" cy="36" r="11" />
+          </svg>
+          FELLOWSHIP
+        </Link>
+        <div className="auth-words">
+          <span className="auth-ghost" aria-hidden="true">Fellowship</span>
+          <h1>Fellowship</h1>
+          <span className="auth-ghost" aria-hidden="true">Fellowship</span>
+        </div>
+        <p>Where your community gathers. Channels, threads, huddles and workflows in one place.</p>
       </div>
       <form className="auth-card" onSubmit={onSubmit ?? ((e) => e.preventDefault())}>{children}</form>
     </div>
