@@ -12,6 +12,7 @@ import PresenceDot from '../features/presence/PresenceDot';
 import UnreadThreadsBadge from '../features/threads/UnreadThreadsBadge';
 import ActivityBadge from '../features/notifications/ActivityBadge';
 import HuddleIndicator from '../features/huddles/HuddleIndicator';
+import ProjectsSidebarSection from '../features/projects/SidebarSection';
 
 function loadCollapsed(): Record<string, boolean> {
   try { return JSON.parse(localStorage.getItem('fs:sidebar') ?? '{}'); } catch { return {}; }
@@ -132,6 +133,8 @@ export function Sidebar({ workspace, currentUser }: { workspace: Workspace; curr
           {dms.map(item)}
           {!query && <button className="sb-item sb-add" onClick={() => openModal({ kind: 'newMessage' })}><span className="sb-icon"><Icon name="plus" size={15} /></span><span className="sb-label">Add teammates</span></button>}
         </Section>
+
+        {mode === 'home' && <ProjectsSidebarSection workspaceId={workspace.id} />}
 
         {mode === 'home' && (
           <Section title="Apps" icon="grid" open={!collapsed.apps} onToggle={() => toggle('apps')}>

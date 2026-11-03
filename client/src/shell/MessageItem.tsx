@@ -16,6 +16,7 @@ import { toggleReaction } from '../features/reactions/api';
 import Attachments from '../features/files/Attachments';
 import WorkflowMessageParts from '../features/workflows/WorkflowMessageParts';
 import CanvasShareCard from '../features/canvases/CanvasShareCard';
+import WorkItemCard from '../features/projects/WorkItemCard';
 import AppMessageParts from '../features/apps/AppMessageParts';
 
 export interface MessageItemProps {
@@ -85,6 +86,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
           )}
           <Attachments message={m} files={m.files} />
           <CanvasShareCard message={m} />
+          <WorkItemCard message={m} />
           <WorkflowMessageParts message={m} conversation={conversation} currentUser={currentUser} />
           <AppMessageParts message={m} conversation={conversation} currentUser={currentUser} />
           <ReactionBar message={m} conversation={conversation} currentUser={currentUser} />

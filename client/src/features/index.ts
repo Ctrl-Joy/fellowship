@@ -9,8 +9,9 @@ import huddles from './huddles/setup';
 import canvases from './canvases/setup';
 import apps from './apps/setup';
 import workflows from './workflows/setup';
+import projects from './projects/setup';
 
-const setups: FeatureSetup[] = [threads, reactions, files, search, notifications, presence, huddles, canvases, apps, workflows];
+const setups: FeatureSetup[] = [threads, reactions, files, search, notifications, presence, huddles, canvases, apps, workflows, projects];
 
 /** Run every feature's setup for a workspace; returns a combined cleanup. Owned by core. */
 export function setupFeatures(ctx: FeatureSetupContext): () => void {

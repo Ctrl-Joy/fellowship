@@ -1,0 +1,83 @@
+/* Development tab: metrics, connections and code-host tables. */
+.dv { display: flex; flex-direction: column; gap: 24px; padding: 20px 24px 40px; max-width: 1200px; color: var(--fg); }
+.dv-section-title { font-size: 15px; font-weight: 700; color: var(--fg-strong); margin: 0 0 4px; }
+.dv-section-sub { font-size: 13px; color: var(--fg-muted); margin: 0 0 12px; }
+
+.dv-metrics { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.dv-metric { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: var(--bg-subtle);
+  border: 1px solid var(--border); border-radius: var(--radius); min-width: 0; }
+.dv-metric-label { font-size: 12.5px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.dv-metric-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.dv-metric-value { font-size: 26px; font-weight: 700; color: var(--fg-strong); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.dv-metric-value.is-alert { color: var(--mention); }
+.dv-metric-desc { font-size: 12.5px; color: var(--fg-faint); line-height: 1.4; }
+.dv-metric-link { font-size: 13px; color: var(--link); align-self: flex-start; margin-top: auto; }
+.dv-metric-link:hover { text-decoration: underline; }
+.dv-spark { width: 120px; height: 36px; flex: none; }
+.dv-spark-area { fill: var(--brand); opacity: 0.16; }
+.dv-spark-line { stroke: var(--brand-strong); stroke-width: 1.8; stroke-linejoin: round; }
+.dv-spark-dot { fill: var(--brand-strong); }
+
+.dv-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 14px; flex-wrap: wrap; }
+.dv-tab { padding: 8px 12px; font-size: 14px; color: var(--fg-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.dv-tab:hover { color: var(--fg); }
+.dv-tab[aria-selected='true'] { color: var(--fg-strong); border-bottom-color: var(--brand-strong); font-weight: 600; }
+
+.dv-connectors { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.dv-connector { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-subtle); display: flex; flex-direction: column; gap: 6px; }
+.dv-connector-name { font-weight: 700; color: var(--fg-strong); }
+.dv-connector-text { font-size: 13px; color: var(--fg-muted); line-height: 1.45; }
+
+.dv-hook { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; background: var(--bg-subtle); display: flex; flex-direction: column; gap: 10px; }
+.dv-hook-row { display: flex; gap: 8px; align-items: center; }
+.dv-hook-url { flex: 1; min-width: 0; font-family: var(--mono); font-size: 12.5px; background: var(--code-bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+.dv-code { font-family: var(--mono); font-size: 12px; background: var(--code-bg); color: var(--fg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px; overflow-x: auto; white-space: pre; margin: 0; }
+.dv-example { display: flex; flex-direction: column; gap: 6px; }
+.dv-example-title { font-size: 13px; font-weight: 700; color: var(--fg); }
+.dv-note { font-size: 12.5px; color: var(--fg-muted); line-height: 1.5; margin: 0; }
+.dv-list { list-style: none; margin: 0; padding: 0; }
+.dv-list-item { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.dv-list-item:last-child { border-bottom: none; }
+.dv-list-item a { color: var(--link); }
+.dv-list-item a:hover { text-decoration: underline; }
+
+.dv-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.dv-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.dv-table th { text-align: left; font-size: 12px; font-weight: 700; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.03em;
+  padding: 9px 12px; background: var(--bg-subtle); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.dv-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--fg); }
+.dv-table tr:last-child td { border-bottom: none; }
+.dv-table a { color: var(--link); }
+.dv-table a:hover { text-decoration: underline; }
+.dv-cell-muted { color: var(--fg-faint); }
+.dv-title-cell { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.dv-badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
+.dv-badge-open { background: rgba(93, 187, 99, 0.2); color: #8FDB94; }
+.dv-badge-merged { background: rgba(181, 124, 240, 0.2); color: #D3AEFF; }
+.dv-badge-closed { background: rgba(138, 143, 152, 0.22); color: var(--fg-muted); }
+.dv-badge-success { background: rgba(93, 187, 99, 0.2); color: #8FDB94; }
+.dv-badge-failed { background: rgba(229, 62, 62, 0.2); color: #FF9E9E; }
+.dv-badge-in_progress { background: rgba(76, 141, 246, 0.2); color: #8DB6FF; }
+.dv-badge-fixed { background: rgba(93, 187, 99, 0.2); color: #8FDB94; }
+.dv-badge-sev-critical { background: rgba(229, 62, 62, 0.25); color: #FF9E9E; }
+.dv-badge-sev-high { background: rgba(237, 137, 54, 0.22); color: #F6B07A; }
+.dv-badge-sev-medium { background: rgba(242, 165, 65, 0.2); color: #F2C078; }
+.dv-badge-sev-low { background: rgba(76, 141, 246, 0.2); color: #8DB6FF; }
+:root[data-theme='light'] .dv-badge-open, :root[data-theme='light'] .dv-badge-success, :root[data-theme='light'] .dv-badge-fixed { color: #2F7D33; }
+:root[data-theme='light'] .dv-badge-merged { color: #7A3FC0; }
+:root[data-theme='light'] .dv-badge-failed, :root[data-theme='light'] .dv-badge-sev-critical { color: #B42323; }
+:root[data-theme='light'] .dv-badge-sev-high { color: #A8500E; }
+:root[data-theme='light'] .dv-badge-sev-medium { color: #8A5A12; }
+:root[data-theme='light'] .dv-badge-sev-low, :root[data-theme='light'] .dv-badge-in_progress { color: #1F5FC7; }
+
+.dv-empty { padding: 28px 16px; text-align: center; color: var(--fg-muted); font-size: 14px; border: 1px dashed var(--border-strong); border-radius: var(--radius); }
+.dv-loading, .dv-error { padding: 40px; text-align: center; color: var(--fg-muted); }
+.dv-error { color: var(--mention); }
+
+@media (max-width: 640px) {
+  .dv { padding: 16px; }
+  .dv-hook-row { flex-direction: column; align-items: stretch; }
+}

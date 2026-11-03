@@ -11,7 +11,9 @@ export type BusEventType =
   | 'huddle.started' | 'huddle.updated' | 'huddle.ended'
   | 'canvas.updated'
   | 'workflow.run_updated'
-  | 'notification.created';
+  | 'notification.created'
+  | 'project.created' | 'project.updated' | 'project.deleted' | 'project.dev_updated'
+  | 'item.created' | 'item.updated' | 'item.deleted' | 'item.assigned' | 'item.commented';
 
 export interface BusEvent<P = any> {
   type: BusEventType | (string & {});

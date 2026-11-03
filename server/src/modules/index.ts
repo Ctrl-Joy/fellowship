@@ -10,6 +10,7 @@ import huddles from './huddles';
 import canvases from './canvases';
 import apps from './apps';
 import workflows from './workflows';
+import projects from './projects';
 
 /** Ordered: migrations and register() run in this order. core must stay first. */
 export const modules: FellowshipModule[] = [
@@ -24,4 +25,5 @@ export const modules: FellowshipModule[] = [
   canvases,
   apps,
   workflows,
+  projects,
 ];

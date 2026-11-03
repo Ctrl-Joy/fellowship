@@ -22,6 +22,8 @@ import WorkflowsView from '../features/workflows/WorkflowsView';
 import CanvasesPage from '../features/canvases/CanvasesPage';
 import SearchResults from '../features/search/SearchResults';
 import HuddleWindow from '../features/huddles/HuddleWindow';
+import ProjectsRoot from '../features/projects/ProjectsRoot';
+import ProjectToasts from '../features/projects/ProjectToasts';
 
 /** The signed-in app shell for /w/:wid/*. */
 export function WorkspacePage() {
@@ -97,12 +99,14 @@ export function WorkspacePage() {
           <Route path="workflows" element={<WorkflowsView workspaceId={wid} currentUser={me} />} />
           <Route path="canvases/*" element={<CanvasesPage workspaceId={wid} currentUser={me} />} />
           <Route path="search" element={<SearchRoute workspaceId={wid} />} />
+          <Route path="projects/*" element={<ProjectsRoot workspaceId={wid} currentUser={me} />} />
           <Route path="*" element={<Navigate to={`/w/${wid}`} replace />} />
         </Routes>
       </main>
       {rightPanel && <div className="right"><RightPanel workspaceId={wid} currentUser={me} /></div>}
       <Modals workspaceId={wid} currentUser={me} />
       <HuddleWindow workspaceId={wid} currentUser={me} />
+      <ProjectToasts />
     </div>
   );
 }
