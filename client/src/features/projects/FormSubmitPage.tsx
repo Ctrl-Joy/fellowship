@@ -37,7 +37,7 @@ export default function FormSubmitPage({ workspaceId }: ProjectsViewProps) {
   }, [fid]);
 
   const people = useMemo(
-    () => Object.values(members).filter((m) => !m.deactivated).sort((a, b) => displayName(a).localeCompare(displayName(b))),
+    () => Object.values(members).filter((m) => !m.deactivated && !m.isBot).sort((a, b) => displayName(a).localeCompare(displayName(b))),
     [members],
   );
 

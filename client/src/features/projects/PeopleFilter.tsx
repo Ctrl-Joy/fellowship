@@ -4,10 +4,10 @@ import { useSession, displayName } from '../../store/session';
 import type { Member } from '../../types';
 import './summary.css';
 
-/** Active workspace members, sorted by name. */
+/** Active (non-bot) workspace members, sorted by name. */
 export function useWorkspaceMembers(): Member[] {
   const members = useSession((s) => s.members);
-  return useMemo(() => Object.values(members).filter((m) => !m.deactivated)
+  return useMemo(() => Object.values(members).filter((m) => !m.deactivated && !m.isBot)
     .sort((a, b) => displayName(a).localeCompare(displayName(b))), [members]);
 }
 

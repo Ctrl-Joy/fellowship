@@ -188,7 +188,7 @@ export default function SearchResults({ workspaceId, query, currentUser }: Searc
         )}
         {error && <div className="srch-status"><p>{error}</p></div>}
         {hasQuery && !error && page && shown.length > 0 && (
-          <div className="srch-summary">{shown.length}{page.nextCursor ? '+' : ''} {type} found</div>
+          <div className="srch-summary">{shown.length}{page.nextCursor ? '+' : ''} {shown.length === 1 && !page.nextCursor ? resultType : type} found</div>
         )}
 
         {type === 'messages' && (
