@@ -7,6 +7,11 @@ import { FEATURES, FOOTER, HERO, INTEGRATIONS, STATEMENT, TEMPLATES, USE_CASES }
 import '../styles/fly.css';
 
 const RING = 18;
+
+/** Render "plain *accent* plain" with the starred words as italic serif accents. */
+function emph(text: string) {
+  return text.split('*').map((part, i) => (i % 2 ? <em key={i} className="fy-em">{part}</em> : part));
+}
 const clamp = (v: number) => Math.min(1, Math.max(0, v));
 // Per-card depth for the fly-out: deeper cards rush past the viewer faster and grow larger.
 const DEPTH = Array.from({ length: RING }, (_, i) => 0.45 + ((i * 7919) % 100) / 100 * 1.25);
@@ -16,7 +21,7 @@ const DEPTH = Array.from({ length: RING }, (_, i) => 0.45 + ((i * 7919) % 100) /
  * viewer while a statement fills in; feature scenes that change as you scroll; an integrations hub; then
  * templates, use cases and a finale. One scroll handler (writes only on change) + one ring animation loop.
  */
-export function LandingPage() {
+export function LandingPage({ embedded = false }: { embedded?: boolean } = {}) {
   const root = useRef<HTMLDivElement>(null);
   const { hash } = useLocation();
 
@@ -32,7 +37,7 @@ export function LandingPage() {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const $ = <T extends Element>(s: string) => el.querySelector<T>(s)!;
     const $$ = <T extends Element>(s: string) => [...el.querySelectorAll<T>(s)];
-    const nav = $<HTMLElement>('.fy-nav');
+    const nav = el.querySelector<HTMLElement>('.fy-nav'); // absent when embedded under another hero
     const hero = $<HTMLElement>('.fy-hero'), heroCopy = $<HTMLElement>('.fy-hero-copy');
     const cards = $$<HTMLElement>('.fy-orb'), words = $$<HTMLElement>('.fy-statement span'), statement = $<HTMLElement>('.fy-statement');
     const feat = $<HTMLElement>('.fy-features'), ftexts = $$<HTMLElement>('.fy-ftext'), fscenes = $$<HTMLElement>('.fy-fscene');
@@ -52,7 +57,7 @@ export function LandingPage() {
       const heroP = progressOf(hero, vh), featP = progressOf(feat, vh), intP = progressOf(integ, vh);
       // --- writes (only when something actually changed) ---
       const navOn = window.scrollY > 20;
-      if (navOn !== state.navOn) { state.navOn = navOn; nav.classList.toggle('solid', navOn); }
+      if (navOn !== state.navOn) { state.navOn = navOn; nav?.classList.toggle('solid', navOn); }
 
       state.heroP = heroP;
       state.q = reduce ? 0 : clamp((heroP - 0.28) / 0.62);
@@ -118,8 +123,8 @@ export function LandingPage() {
   }, []);
 
   return (
-    <div className="fy" ref={root}>
-      <nav className="fy-nav">
+    <div className={`fy${embedded ? ' fy-embedded' : ''}`} ref={root}>
+      {!embedded && <nav className="fy-nav">
         <Link to="/welcome" className="fy-brand"><LogoMark size={26} /> Fellowship</Link>
         <div className="fy-menu">
           {['Messaging', 'Workflows', 'Projects', 'Apps', 'Self-host'].map((m) => <a key={m} href={`#${m.toLowerCase()}`}>{m}</a>)}
@@ -128,15 +133,17 @@ export function LandingPage() {
           <Link to="/login" className="fy-login">Log in</Link>
           <Link to="/signup" className="fy-btn">{HERO.cta}</Link>
         </div>
-      </nav>
+      </nav>}
 
-      <section className="fy-hero" aria-labelledby="fy-title">
+      <section className="fy-hero" id="community" aria-labelledby="fy-title">
         <div className="fy-hero-stage">
           <div className="fy-ring" aria-hidden="true">
             {Array.from({ length: RING }, (_, i) => <div key={i} className="fy-orb"><Avatar seed={i * 3 + 1} /></div>)}
           </div>
           <div className="fy-hero-copy">
-            <h1 id="fy-title">{HERO.title[0]}<br />{HERO.title[1]}</h1>
+            {embedded
+              ? <h2 id="fy-title" className="fy-ring-title">{emph(HERO.title[0])}<br />{emph(HERO.title[1])}</h2>
+              : <h1 id="fy-title">{emph(HERO.title[0])}<br />{emph(HERO.title[1])}</h1>}
             <Link to="/signup" className="fy-btn fy-btn-lg">{HERO.cta}</Link>
             <p className="fy-chaton">Works on {HERO.worksOn.map((w) => <span key={w}>{w}</span>)}</p>
           </div>
@@ -155,7 +162,7 @@ export function LandingPage() {
           <div className="fy-ftexts">
             {FEATURES.map((f, i) => (
               <div key={f.key} className={`fy-ftext${i === 0 ? ' on' : ''}`}>
-                <h2>{f.title}</h2>
+                <h2>{emph(f.title)}</h2>
                 {f.pills && <div className="fy-pills">{f.pills.map((p, k) => <span key={p} className={`fy-pill${k === 0 ? ' on' : ''}`}>{p}</span>)}</div>}
                 <p>{f.body}</p>
                 <Link to="/signup" className="fy-more">{f.cta} <span aria-hidden="true">→</span></Link>
@@ -174,7 +181,7 @@ export function LandingPage() {
       <section className="fy-integrations" id="apps">
         <div className="fy-int-stage">
           <div className="fy-int-head">
-            <h2>{INTEGRATIONS.title}</h2>
+            <h2>{emph(INTEGRATIONS.title)}</h2>
             <p>{INTEGRATIONS.body}</p>
             <Link to="/signup" className="fy-more">{INTEGRATIONS.cta} <span aria-hidden="true">→</span></Link>
           </div>
@@ -187,7 +194,7 @@ export function LandingPage() {
       </section>
 
       <section className="fy-templates">
-        <h2 className="fy-reveal">Start with a template</h2>
+        <h2 className="fy-reveal">Start with a <em className="fy-em">template</em></h2>
         <p className="fy-sub fy-reveal">Get going in minutes with ready-made workflows, canvases and apps.</p>
         <div className="fy-tgrid">
           {TEMPLATES.map((t, i) => (
@@ -202,7 +209,7 @@ export function LandingPage() {
       </section>
 
       <section className="fy-uses" id="self-host">
-        <h2 className="fy-reveal">How teams use Fellowship</h2>
+        <h2 className="fy-reveal">How communities use <em className="fy-em">Fellowship</em></h2>
         <div className="fy-lead fy-reveal">
           <Avatar seed={40} className="fy-lead-av" />
           <div>
@@ -236,7 +243,7 @@ export function LandingPage() {
           <rect width="1440" height="720" fill="url(#fy-fade)" />
         </svg>
         <div className="fy-finale-copy fy-reveal">
-          <h2>Gather your fellowship</h2>
+          <h2>Gather your <em className="fy-em">fellowship</em></h2>
           <Link to="/signup" className="fy-btn fy-btn-dark">Get started <span aria-hidden="true">→</span></Link>
         </div>
         <footer className="fy-footer">

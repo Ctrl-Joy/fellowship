@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Menu, X } from 'lucide-react';
+import { LandingPage as ScrollScenes } from './LandingPage';
 import '../styles/spotlight.css';
 
 const BG_IMAGE_1 =
@@ -38,13 +39,13 @@ function RevealLayer({ image, layerRef }: { image: string; layerRef: React.RefOb
   );
 }
 
-/** Nav items jump to the matching scene on the product tour page. */
+/** Nav items jump to the matching section further down this page. */
 const NAV: [string, string][] = [
-  ['Messaging', '/welcome/scenes#messaging'],
-  ['Workflows', '/welcome/scenes#workflows'],
-  ['Projects', '/welcome/scenes#projects'],
-  ['Apps', '/welcome/scenes#apps'],
-  ['Self-host', '/welcome/scenes#self-host'],
+  ['Community', '#community'],
+  ['Messaging', '#messaging'],
+  ['Workflows', '#workflows'],
+  ['Projects', '#projects'],
+  ['Apps', '#apps'],
 ];
 
 export function SpotlightLanding() {
@@ -134,29 +135,31 @@ export function SpotlightLanding() {
         <div className="absolute top-[14%] left-0 right-0 flex flex-col items-center text-center px-5 pointer-events-none z-50">
           <h1 className="text-white leading-[0.95]">
             <span className="block font-playfair italic font-normal text-5xl sm:text-7xl md:text-8xl hero-anim hero-reveal" style={{ letterSpacing: '-0.05em', animationDelay: '0.25s' }}>
-              Every voice,
+              Where your
             </span>
             <span className="block font-normal text-5xl sm:text-7xl md:text-8xl -mt-1 hero-anim hero-reveal" style={{ letterSpacing: '-0.08em', animationDelay: '0.42s' }}>
-              one fellowship
+              community gathers
             </span>
           </h1>
         </div>
 
         <div className="hidden sm:block absolute bottom-14 left-10 md:left-14 max-w-[260px] z-50 hero-anim hero-fade" style={{ animationDelay: '0.7s' }}>
           <p className="text-sm text-white/80 leading-relaxed">
-            Channels, threads and huddles keep every conversation in one place, from quick questions to the decisions that shape the whole team.
+            Channels for every topic, threads for every question, and huddles for the moments when typing isn't enough.
           </p>
         </div>
 
         <div className="absolute bottom-10 sm:bottom-24 left-5 right-5 sm:left-auto sm:right-10 md:right-14 max-w-full sm:max-w-[260px] flex flex-col items-start gap-4 sm:gap-5 z-50 hero-anim hero-fade" style={{ animationDelay: '0.85s' }}>
           <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-            Canvases, workflows and projects turn what you talk about into work that ships, on a workspace you host yourself.
+            Bring your members, your plans and your tools into one place, and keep every conversation moving.
           </p>
           <Link to="/signup" className="bg-[#e8702a] hover:bg-[#d2611f] text-white text-sm font-medium px-7 py-3 rounded-full no-underline transition-all hover:scale-[1.03] active:scale-95 hover:shadow-lg hover:shadow-[#e8702a]/30">
-            Start your workspace
+            Start your community
           </Link>
         </div>
       </section>
+
+      <ScrollScenes embedded />
     </div>
   );
 }

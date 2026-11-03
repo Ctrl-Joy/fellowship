@@ -218,3 +218,17 @@
   .fy-msg, .fy-typing, .fy-note, .fy-reveal { opacity: 1; transform: none; }
   .fy-statement span { color: #fff; }
 }
+
+/* ---- accents shared with the spotlight hero ---- */
+/* Starred words in headings: italic serif, like the hero's first line. */
+.fy .fy-em { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.03em; }
+.fy-hero-copy h2 { font-size: clamp(40px, 4.6vw, 68px); line-height: 1.08; margin: 0; font-weight: 500; letter-spacing: -0.025em; }
+/* Under the spotlight hero the page takes its warm orange as the one accent colour. */
+.fy-embedded { --fy-blue: #e8702a; }
+.fy-embedded .fy-btn-lg, .fy-embedded .fy-finale .fy-btn { background: #e8702a; color: #fff !important; }
+.fy-embedded .fy-btn-lg:hover, .fy-embedded .fy-finale .fy-btn:hover { background: #d2611f; box-shadow: 0 10px 30px rgba(232, 112, 42, 0.3); }
+.fy-embedded .fy-pill.on { background: rgba(232, 112, 42, 0.22); color: #FFD8BF; }
+.fy-embedded .fy-hub-core { box-shadow: 0 0 90px rgba(232, 112, 42, 0.32); }
+.fy-embedded .fy-card b { color: #FFB27F; }
+.fy-embedded .fy-card-moving { background: #4A2E1E; }
+.fy-embedded .fy-statement span.lit .fy-em, .fy-embedded .fy-statement span.lit { color: #fff; }
