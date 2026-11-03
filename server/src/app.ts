@@ -41,7 +41,7 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     dbPath,
     dataDir,
     uploadsDir: opts.uploadsDir ?? join(dataDir, 'uploads'),
-    port: opts.port ?? Number(process.env.PORT ?? 4000),
+    port: opts.port ?? Number(process.env.API_PORT ?? 4000),
     isTest: opts.isTest ?? false,
   };
 

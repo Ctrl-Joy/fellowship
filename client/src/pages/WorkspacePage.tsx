@@ -32,6 +32,7 @@ export function WorkspacePage() {
   const membersLoaded = useSession((s) => s.membersLoaded);
   const rightPanel = useUi((s) => s.rightPanel);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!wid) return;
@@ -43,7 +44,12 @@ export function WorkspacePage() {
       workspaces.length ? Promise.resolve() : loadWorkspaces().then(() => {}),
       loadMembers(wid),
       loadConversations(wid),
-    ]).catch((e) => setError(e.status === 404 ? 'You’re not a member of this workspace.' : e.message));
+    ]).catch((e) => {
+      if (e.status !== 404) return setError(e.message);
+      // A remembered workspace may no longer exist (e.g. after a reseed): forget it and go pick one.
+      try { if (localStorage.getItem('fs:lastWorkspace') === wid) localStorage.removeItem('fs:lastWorkspace'); } catch { /* ignore */ }
+      navigate('/workspaces', { replace: true });
+    });
     startRealtime();
     ws.connect();
     const cleanup = setupFeatures({ workspaceId: wid, me });

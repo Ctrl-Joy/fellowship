@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import fastifyStatic from '@fastify/static';
 import { buildApp } from './app';
 
-const port = Number(process.env.PORT ?? 4000);
+// API_PORT, not PORT: tools that launch `npm run dev` set PORT for the Vite client.
+const port = Number(process.env.API_PORT ?? 4000);
 // 'localhost' makes Fastify bind both 127.0.0.1 and ::1.
 const host = process.env.HOST ?? 'localhost';
 
