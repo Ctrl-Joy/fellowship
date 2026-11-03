@@ -160,7 +160,7 @@ export function NetworkMap({ dive }: { dive: MutableRefObject<DiveState> }) {
       }
 
       // --- background: night blue blending into the page colour as we dive ---
-      const bg = [2, 4, 15].map((v, i) => Math.round(v + (page[i] - v) * ease));
+      const bg = [1, 4, 25].map((v, i) => Math.round(v + (page[i] - v) * ease));
       ctx.fillStyle = `rgb(${bg[0]},${bg[1]},${bg[2]})`;
       ctx.fillRect(0, 0, w, h);
 

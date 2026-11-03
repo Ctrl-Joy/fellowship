@@ -88,4 +88,4 @@ export const CATEGORIES: Category[] = [
 ];
 
 /** Starting page colour (the hero), before any section has scrolled in. */
-export const START_COLOR = '#0B1F7A';
+export const START_COLOR = '#051DAA';

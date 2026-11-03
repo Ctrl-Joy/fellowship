@@ -39,7 +39,7 @@ export function LandingPage() {
     el.querySelectorAll('.ed-reveal').forEach((n) => reveal.observe(n));
     const railButtons = [...rail.current!.querySelectorAll('button')];
     const fadeAway = [...el.querySelectorAll<HTMLElement>('.ed-dive-away')];
-    let lastActive = -2, lastScrolled: boolean | null = null, lastBg = '';
+    let lastActive = -2, lastScrolled: boolean | null = null, lastBg = '', lastNavO = '';
     // Reads first, then writes, and no inherited custom properties on big subtrees: each scroll frame
     // touches only the few elements that actually change, so style recalc stays tiny.
     const update = () => {
@@ -50,7 +50,8 @@ export function LandingPage() {
       let current = -1;
       sections.forEach((s, i) => {
         const top = s.getBoundingClientRect().top;
-        const p = Math.min(1, Math.max(0, (vh - top) / (vh * 0.5)));
+        // Measured on the reference: each colour step runs over the first 360px after the section enters.
+        const p = Math.min(1, Math.max(0, (vh - top) / 360));
         c = mix(c, colors[i], p);
         if (top < vh * 0.5) current = i;
       });
@@ -87,7 +88,14 @@ export function LandingPage() {
         // The heading is only on screen once the stage pins (~66%), so the letter fill runs from there.
         it.style.setProperty('--p', Math.min(1, Math.max(0, (p - 0.66) / 0.29)).toFixed(3));
       }
-      if (current !== lastActive) { lastActive = current; railButtons.forEach((b, i) => b.classList.toggle('on', i === current)); }
+      if (current !== lastActive) {
+        lastActive = current;
+        railButtons.forEach((b, i) => b.classList.toggle('on', i === current));
+        rail.current!.classList.toggle('shown', current >= 0);
+      }
+      // Nav underlay fades in over the first 32px of scroll.
+      const navO = Math.min(1, window.scrollY / 32).toFixed(2);
+      if (navO !== lastNavO) { lastNavO = navO; nav.current!.style.setProperty('--nav-o', navO); }
       const scrolled = window.scrollY > 8;
       if (scrolled !== lastScrolled) { lastScrolled = scrolled; nav.current!.classList.toggle('scrolled', scrolled); }
     };
