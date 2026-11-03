@@ -14,6 +14,7 @@ import { EditionsLanding } from './pages/EditionsLanding';
 import { SpotlightLanding } from './pages/SpotlightLanding';
 import { HeroLanding } from './pages/HeroLanding';
 import { FellowshipLanding } from './pages/FellowshipLanding';
+import { ExplorePage } from './pages/explore/ExplorePage';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const me = useSession((s) => s.me);
@@ -54,6 +55,7 @@ export function App() {
         <Route path="/join/:code" element={<RequireAuth><JoinPage /></RequireAuth>} />
         <Route path="/w/:wid/*" element={<RequireAuth><WorkspacePage /></RequireAuth>} />
         <Route path="/welcome" element={<FellowshipLanding />} />
+        <Route path="/explore/:slug" element={<ExplorePage />} />
         <Route path="/welcome/hero" element={<HeroLanding />} />
         <Route path="/welcome/spotlight" element={<SpotlightLanding />} />
         <Route path="/welcome/scenes" element={<LandingPage />} />

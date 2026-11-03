@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Icon } from '../components/Icon';
+import { FOOTER_GROUPS } from './explore/content';
 import '../styles/fellowship.css';
 
 /** Orbit tracks in a 1000×560 design space shared with the SVG, so tracks and tiles stay aligned at any size. */
@@ -33,15 +34,6 @@ function pointOn(t: (typeof TRACKS)[number], angle: number) {
 
 const WORD = 'Fellowship';
 
-const TIERS = [
-  { label: 'Starting out', value: '10+', unit: 'members', body: 'A few channels, a place for quick questions, and a huddle whenever it is easier to talk.',
-    fit: ['A new group or side project', 'One workspace'], gets: ['Channels and direct messages', 'Threads, reactions and search', 'Huddles for up to 8 people'] },
-  { label: 'Growing', value: '100+', unit: 'members', body: 'Shared notes, routines that run themselves and plans everyone can follow as the community fills up.',
-    fit: ['Clubs, classes and teams', 'Several organisers'], gets: ['Canvases for shared notes', 'Workflows for sign-ups and reminders', 'Project boards for plans', 'Guests for visitors'] },
-  { label: 'Network', value: '1000+', unit: 'members', body: 'Several workspaces, connected tools and verified sign-ins for a large community you run yourself.',
-    fit: ['Large or public communities', 'Several workspaces'], gets: ['Apps, bots and webhooks', 'Slash commands and events', 'Email verification for every member', 'Self-hosted on your own server'] },
-];
-
 const FIT = [
   { icon: 'users', title: 'You bring people together', body: 'A club, a class, a team, a project or a whole neighbourhood.' },
   { icon: 'hash', title: 'You need more than a group chat', body: 'A channel per topic, threads for side conversations.' },
@@ -64,13 +56,6 @@ const FAQ = [
   { q: 'Where is my data stored?', a: 'In a SQLite database on the server you run Fellowship on. Nothing is sent anywhere else.' },
 ];
 
-const FOOTER = [
-  { title: 'Product', links: ['Channels', 'Huddles', 'Canvases', 'Workflows', 'Projects'] },
-  { title: 'Communities', links: ['Open communities', 'Private teams', 'Classes & clubs', 'Open source'] },
-  { title: 'Resources', links: ['Templates', 'Apps & bots', 'Self-hosting', 'Docs'] },
-  { title: 'Fellowship', links: ['About', 'Security', 'Contact'] },
-];
-
 function Mark({ size = 26 }: { size?: number }) {
   return (
     <svg width={size} height={size * 0.9} viewBox="4 3 56 50" fill="none" stroke="#FA4C0D" strokeWidth="6" aria-hidden="true">
@@ -85,12 +70,79 @@ function Chevron() {
   return <svg viewBox="0 0 8 5" width="8" height="5" aria-hidden="true"><path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
-/** Fellowship's landing page: an orbiting wordmark hero followed by plans, fit, resources, FAQ and footer. */
+/** Site header: full nav at the top, collapsing to the logo and an orange pill once the page scrolls. */
+export function SiteHeader() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const header = ref.current!;
+    let compact = false;
+    const onScroll = () => {
+      const c = window.scrollY > 60;
+      if (c !== compact) { compact = c; header.classList.toggle('compact', c); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <header className="fl-header" ref={ref}>
+      <Link to="/welcome" className="fl-logo" aria-label="Fellowship home">
+        <Mark />
+        <span className="fl-wordmark">FELLOWSHIP</span>
+      </Link>
+      <nav className="fl-nav" aria-label="Main">
+        <Link to="/explore/channels">Product <Chevron /></Link>
+        <Link to="/explore/open-communities">Communities <Chevron /></Link>
+        <Link to="/welcome#resources">Resources <Chevron /></Link>
+        <Link to="/welcome#faq">FAQ</Link>
+      </nav>
+      <div className="fl-actions">
+        <Link to="/login" className="fl-login">Login</Link>
+        <Link to="/signup" className="fl-plain">Create account</Link>
+        <Link to="/signup" className="fl-pill fl-pill-sm fl-header-cta">Start your community</Link>
+      </div>
+    </header>
+  );
+}
+
+/** Site footer: every link opens its own /explore page. */
+export function SiteFooter() {
+  return (
+    <footer className="fl-footer">
+      <div className="fl-footer-top">
+        <Link to="/welcome" className="fl-footer-brand" aria-label="Fellowship home">
+          <Mark size={34} />
+          <span className="fl-wordmark">FELLOWSHIP</span>
+        </Link>
+        {FOOTER_GROUPS.map((col) => (
+          <div key={col.title} className="fl-footer-col">
+            <h4>{col.title}</h4>
+            {col.links.map((l) => <Link key={l.slug} to={`/explore/${l.slug}`}>{l.label}</Link>)}
+          </div>
+        ))}
+      </div>
+      <div className="fl-footer-bottom">
+        <span>© {new Date().getFullYear()} Fellowship</span>
+        <span className="fl-footer-end"><Link to="/explore/security">Security</Link><Link to="/login">Sign in</Link></span>
+      </div>
+    </footer>
+  );
+}
+
+/** Fellowship's landing page: an orbiting wordmark hero followed by fit, resources, FAQ and footer. */
 export function FellowshipLanding() {
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const tiles = useRef<(HTMLDivElement | null)[]>([]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { hash } = useLocation();
+
+  // Arriving from a header link elsewhere: scroll to the named section.
+  useEffect(() => {
+    if (!hash) return;
+    const timer = window.setTimeout(() => document.getElementById(hash.slice(1))?.scrollIntoView(), 60);
+    return () => clearTimeout(timer);
+  }, [hash]);
 
   // Orbiting tiles: runs only while the hero is on screen.
   useEffect(() => {
@@ -131,14 +183,10 @@ export function FellowshipLanding() {
   // Header collapse, hero lift, and reveal-on-scroll.
   useEffect(() => {
     const el = root.current!;
-    const header = el.querySelector<HTMLElement>('.fl-header')!;
     const words = el.querySelector<HTMLElement>('.fl-words')!;
-    let compact = false;
     let lastLift = -1;
     const onScroll = () => {
       const y = window.scrollY;
-      const c = y > 60;
-      if (c !== compact) { compact = c; header.classList.toggle('compact', c); }
       const lift = Math.min(1, y / (window.innerHeight * 0.9));
       if (Math.abs(lift - lastLift) > 0.002) {
         lastLift = lift;
@@ -157,23 +205,7 @@ export function FellowshipLanding() {
 
   return (
     <div className="fl" ref={root}>
-      <header className="fl-header">
-        <Link to="/" className="fl-logo" aria-label="Fellowship home">
-          <Mark />
-          <span className="fl-wordmark">FELLOWSHIP</span>
-        </Link>
-        <nav className="fl-nav" aria-label="Main">
-          <a href="#plans">Product <Chevron /></a>
-          <a href="#fit">Communities <Chevron /></a>
-          <a href="#resources">Resources <Chevron /></a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <div className="fl-actions">
-          <Link to="/login" className="fl-login">Login</Link>
-          <Link to="/signup" className="fl-plain">Create account</Link>
-          <Link to="/signup" className="fl-pill fl-pill-sm fl-header-cta">Start your community</Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="fl-hero" aria-labelledby="fl-title">
         <div className="fl-stage" ref={stage}>
@@ -199,27 +231,6 @@ export function FellowshipLanding() {
         <div className="fl-hero-copy fl-reveal">
           <p>Fellowship gives every community a home: channels for every topic, threads for every question, huddles when typing isn't enough, and workflows that welcome every new member the moment they arrive.</p>
           <Link to="/signup" className="fl-pill">Start your community</Link>
-        </div>
-      </section>
-
-      <section className="fl-section" id="plans">
-        <h2 className="fl-reveal">Grows with your community</h2>
-        <p className="fl-lead fl-reveal">Every feature is free in every workspace. Here's where to start, based on where your community is today.</p>
-        <div className="fl-tiers">
-          {TIERS.map((t, i) => (
-            <article key={t.label} className="fl-tier fl-reveal" style={{ transitionDelay: `${i * 90}ms` }}>
-              <div className="fl-badge">
-                <span className="fl-badge-label">{t.label}</span>
-                <span className="fl-badge-value">{t.value}</span>
-                <span className="fl-badge-unit">{t.unit}</span>
-              </div>
-              <p className="fl-tier-body">{t.body}</p>
-              <h3>Best for</h3>
-              <ul className="fl-boxes">{t.fit.map((f) => <li key={f}>{f}</li>)}</ul>
-              <h3>Start with</h3>
-              <ul className="fl-checks">{t.gets.map((g) => <li key={g}>{g}</li>)}</ul>
-            </article>
-          ))}
         </div>
       </section>
 
@@ -263,24 +274,7 @@ export function FellowshipLanding() {
         </div>
       </section>
 
-      <footer className="fl-footer">
-        <div className="fl-footer-top">
-          <div className="fl-footer-brand">
-            <Mark size={34} />
-            <span className="fl-wordmark">FELLOWSHIP</span>
-          </div>
-          {FOOTER.map((col) => (
-            <div key={col.title} className="fl-footer-col">
-              <h4>{col.title}</h4>
-              {col.links.map((l) => <Link key={l} to="/signup">{l}</Link>)}
-            </div>
-          ))}
-        </div>
-        <div className="fl-footer-bottom">
-          <span>© {new Date().getFullYear()} Fellowship</span>
-          <Link to="/login">Sign in</Link>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
