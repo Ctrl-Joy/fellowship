@@ -1,11 +1,14 @@
 # Render Blueprint: one web service that serves the API, WebSockets and the built web client.
 # Deploy: Render dashboard → New → Blueprint → pick this repository.
+#
+# Free plan: no card needed, but the instance has no persistent disk and sleeps after ~15 minutes
+# idle, so the database and uploads are wiped whenever it restarts, sleeps or redeploys. For real
+# use, switch to `plan: starter` and add the disk shown at the bottom (see docs/DEPLOY.md).
 services:
   - type: web
     name: fellowship
     runtime: node
-    # A persistent disk (for the SQLite database and uploads) needs a paid instance.
-    plan: starter
+    plan: free
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start -w server
     healthCheckPath: /api/health
@@ -20,9 +23,6 @@ services:
         value: 0.0.0.0
       - key: API_PORT
         value: "10000"
-      # Database file; uploads are stored next to it (/var/data/uploads).
-      - key: FELLOWSHIP_DB
-        value: /var/data/fellowship.db
       # Email verification. Set these two in the Render dashboard (they are secrets).
       - key: BREVO_API_KEY
         sync: false
@@ -30,7 +30,9 @@ services:
         sync: false
       - key: BREVO_SENDER_NAME
         value: Fellowship
-    disk:
-      name: fellowship-data
-      mountPath: /var/data
-      sizeGB: 1
+    # Paid plans only — keeps data across restarts:
+    # disk:
+    #   name: fellowship-data
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # and add env var FELLOWSHIP_DB=/var/data/fellowship.db
