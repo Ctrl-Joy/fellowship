@@ -336,7 +336,6 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
   background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 .msg:hover .msg-toolbar, .msg-toolbar.open { display: flex; }
-.msg-picker { position: absolute; top: 100%; right: 0; margin-top: 4px; }
 .inline-editor { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
 .thread-summary { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 4px 8px 4px 4px; border-radius: 7px; border: 1px solid transparent; max-width: 520px; width: 100%; }
 .thread-summary:hover { background: var(--bg); border-color: var(--border); }

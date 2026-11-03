@@ -21,6 +21,7 @@ export function Modals({ workspaceId, currentUser }: { workspaceId: string; curr
   switch (modal.kind) {
     case 'createChannel': return <CreateChannelModal workspaceId={workspaceId} onClose={close} />;
     case 'newMessage': return <NewMessageModal workspaceId={workspaceId} currentUser={currentUser} onClose={close} />;
+    case 'invite': return <InviteModal workspaceId={workspaceId} onClose={close} />;
     case 'quickSwitcher': return <QuickSwitcher workspaceId={workspaceId} currentUser={currentUser} onClose={close} />;
     case 'status': return <StatusEditor currentUser={currentUser} onClose={close} />;
     case 'notificationPrefs': return <NotificationPrefs workspaceId={workspaceId} currentUser={currentUser} conversation={conv} onClose={close} />;
@@ -29,6 +30,23 @@ export function Modals({ workspaceId, currentUser }: { workspaceId: string; curr
 }
 
 const normalize = (name: string) => name.toLowerCase().replace(/^#/, '').replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '').slice(0, 80);
+
+/** Share the workspace's invite link. */
+function InviteModal({ workspaceId, onClose }: { workspaceId: string; onClose(): void }) {
+  const workspace = useSession((s) => s.workspaces.find((w) => w.id === workspaceId));
+  const [copied, setCopied] = useState(false);
+  const link = `${location.origin}/join/${workspace?.inviteCode ?? ''}`;
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(link); setCopied(true); } catch { setCopied(false); }
+  };
+  return (
+    <Modal title={`Invite people to ${workspace?.name ?? 'this workspace'}`} onClose={onClose}
+      footer={<><button className="btn" onClick={onClose}>Done</button><button className="btn btn-primary" onClick={copy}>{copied ? 'Copied' : 'Copy invite link'}</button></>}>
+      <p className="muted" style={{ marginTop: 0 }}>Anyone with this link can join after signing in with a verified email.</p>
+      <input className="input" readOnly value={link} onFocus={(e) => e.currentTarget.select()} aria-label="Invite link" />
+    </Modal>
+  );
+}
 
 function CreateChannelModal({ workspaceId, onClose }: { workspaceId: string; onClose(): void }) {
   const [name, setName] = useState('');

@@ -103,7 +103,8 @@ describe('standalone canvases', () => {
     assert.equal(r.status, 200);
     canvasId = r.body.canvas.id;
     assert.equal(r.body.canvas.title, 'Meeting notes');
-    assert.equal(r.body.blocks[0].type, 'h1');
+    // The title is shown above the body, so the template doesn't repeat it as a heading.
+    assert.notEqual(r.body.blocks[0].text, 'Meeting notes');
     assert.ok(r.body.blocks.length > 5);
     const positions = r.body.blocks.map((b: any) => b.position);
     assert.deepEqual([...positions].sort(), positions);

@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import type { User } from '../../types';
 import ProjectPage from './ProjectPage';
 import ForYou from './ForYou';
@@ -9,6 +10,7 @@ import FormSubmitPage from './FormSubmitPage';
 import ItemPage from './ItemPage';
 import ItemPanel from './ItemPanel';
 import CreateItemModal from './CreateItemModal';
+import { useItemPanel } from './ui';
 import './projects.css';
 
 export interface ProjectsViewProps { workspaceId: string; currentUser: User }
@@ -16,6 +18,9 @@ export interface ProjectsViewProps { workspaceId: string; currentUser: User }
 /** Everything under /w/:wid/projects. */
 export default function ProjectsRoot({ workspaceId, currentUser }: ProjectsViewProps) {
   const props = { workspaceId, currentUser };
+  const { pathname } = useLocation();
+  // The side panel belongs to the page it was opened from; moving to another page closes it.
+  useEffect(() => { useItemPanel.getState().closeItem(); }, [pathname]);
   return (
     <>
       <Routes>

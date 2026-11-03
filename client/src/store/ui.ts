@@ -13,6 +13,7 @@ export type RightPanel =
 export type Modal =
   | { kind: 'createChannel' }
   | { kind: 'newMessage' }
+  | { kind: 'invite' }
   | { kind: 'quickSwitcher' }
   | { kind: 'status' }
   | { kind: 'notificationPrefs'; conversationId?: string }

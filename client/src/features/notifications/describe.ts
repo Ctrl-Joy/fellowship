@@ -1,5 +1,6 @@
 import type { NotificationItem } from './store';
 import { useSession, displayName } from '../../store/session';
+import { useConversations } from '../../store/conversations';
 
 /** One-line description of a notification, written for the activity feed and desktop alerts. */
 export function describeNotification(n: NotificationItem, actor: string, convLabel: string | null): string {
@@ -29,7 +30,13 @@ export function previewText(text: string | null): string {
       return u ? `@${displayName(u)}` : '@someone';
     })
     .replace(/<!(channel|everyone|here)>/g, (_m, g) => `@${g}`)
-    .replace(/<#[A-Za-z0-9]+\|?([^>]*)>/g, (_m, g) => `#${g || 'channel'}`)
+    // <#C123|name> carries its label; bare <#C123> is looked up in the loaded conversations.
+    .replace(/<#([A-Za-z0-9]+)\|?([^>]*)>/g, (_m, id, g) => `#${g || useConversations.getState().byId[id]?.name || 'channel'}`)
+    .replace(/<(https?:[^|>]+)\|([^>]+)>/g, '$2')
+    // Drop paired markdown markers (**bold**, _italic_, ~strike~, `code`) but keep lone characters.
+    .replace(/```/g, '')
+    .replace(/(\*\*|\*|__|_|~~|~|`)(\S(?:.*?\S)?)\1/g, '$2')
+    .replace(/(\*\*|\*|__|_|~~|~|`)(\S(?:.*?\S)?)\1/g, '$2') // second pass for nested markers
     .replace(/\s+/g, ' ')
     .trim();
 }

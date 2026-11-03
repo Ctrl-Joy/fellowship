@@ -120,7 +120,7 @@ function CreateModal({ workspaceId, onClose, onCreated }: { workspaceId: string;
           <button key={t.id} className="wf-tile" disabled={busy} onClick={() => create({ templateId: t.id })}>
             <div className="wf-tile-head"><span className="wf-tile-emoji">{t.emoji}</span><span className="wf-tile-name">{t.name}</span></div>
             <div className="wf-tile-desc">{t.description}</div>
-            <div className="wf-tile-foot">{TRIGGER_INFO[t.trigger.type].icon} {TRIGGER_INFO[t.trigger.type].label} · {countSteps(t.steps)} steps</div>
+            <div className="wf-tile-foot">{TRIGGER_INFO[t.trigger.type].icon} {TRIGGER_INFO[t.trigger.type].label} · {countSteps(t.steps)} {countSteps(t.steps) === 1 ? 'step' : 'steps'}</div>
           </button>
         ))}
       </div>

@@ -35,7 +35,8 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
   const myRole = useSession((s) => s.members[currentUser.id]?.role);
   const editing = useMessages((s) => s.editingId === m.id);
   const openPanel = useUi((s) => s.openRightPanel);
-  const [picker, setPicker] = useState(false);
+  // Where the toolbar emoji picker opens (fixed position), or null when closed.
+  const [picker, setPicker] = useState<{ x: number; y: number; below: boolean } | null>(null);
   const mine = m.userId === currentUser.id;
   const isAdmin = myRole === 'owner' || myRole === 'admin';
   const temp = m.id.startsWith('tmp_');
@@ -101,7 +102,14 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
 
       {!temp && !editing && (
         <div className={`msg-toolbar${picker ? ' open' : ''}`} role="toolbar">
-          <button className="icon-btn" title="Add reaction" data-emoji-trigger onClick={() => setPicker((v) => !v)}><Icon name="smile" size={16} /></button>
+          <button className="icon-btn" title="Add reaction" data-emoji-trigger onClick={(e) => {
+            if (picker) { setPicker(null); return; }
+            const r = e.currentTarget.getBoundingClientRect();
+            // Open on the side with more room, then keep the whole picker (~392px) inside the window.
+            const below = window.innerHeight - r.bottom >= r.top;
+            const top = below ? r.bottom + 6 : r.top - 6 - 392;
+            setPicker({ x: Math.max(8, Math.min(r.right - 300, window.innerWidth - 308)), y: Math.max(8, Math.min(top, window.innerHeight - 400)), below: true });
+          }}><Icon name="smile" size={16} /></button>
           {canReplyHere && <button className="icon-btn" title="Reply in thread" onClick={openThread}><Icon name="thread" size={16} /></button>}
           <button className={`icon-btn${m.saved ? ' active' : ''}`} title={m.saved ? 'Remove from saved' : 'Save for later'} onClick={() => toggleSave(m)}><Icon name="bookmark" size={16} /></button>
           {conversation.isMember && <button className={`icon-btn${m.pinned ? ' active' : ''}`} title={m.pinned ? 'Unpin' : 'Pin to conversation'} onClick={() => togglePin(m)}><Icon name="pin" size={16} /></button>}
@@ -112,8 +120,8 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
             </button>
           )}
           {picker && (
-            <div className="msg-picker">
-              <EmojiPicker onPick={(e) => toggleReaction(m, e, currentUser.id)} onClose={() => setPicker(false)} />
+            <div className="reaction-pop" style={{ left: picker.x, top: picker.y, transform: picker.below ? 'none' : undefined }}>
+              <EmojiPicker onPick={(e) => toggleReaction(m, e, currentUser.id)} onClose={() => setPicker(null)} />
             </div>
           )}
         </div>

@@ -14,7 +14,7 @@ export const BUILTIN_TEMPLATES: BuiltinTemplate[] = [
     title: 'Meeting notes',
     description: 'Agenda, decisions and follow-ups in one place.',
     blocks: [
-      { type: 'h1', text: 'Meeting notes' },
+      
       { type: 'paragraph', text: 'When: ·  Facilitator: ·  Scribe:' },
       { type: 'h2', text: 'Who joined' },
       { type: 'bullet', text: '' },
@@ -35,7 +35,7 @@ export const BUILTIN_TEMPLATES: BuiltinTemplate[] = [
     title: 'Project brief',
     description: 'Frame the problem, the goal and the plan before you start.',
     blocks: [
-      { type: 'h1', text: 'Project brief' },
+      
       { type: 'callout', text: 'In one sentence: what are we building, and for whom?' },
       { type: 'h2', text: 'The problem' },
       { type: 'paragraph', text: 'Describe what is hard or broken today and how we know.' },
@@ -59,7 +59,7 @@ export const BUILTIN_TEMPLATES: BuiltinTemplate[] = [
     title: 'Weekly update',
     description: 'Share progress, blockers and next steps with the team.',
     blocks: [
-      { type: 'h1', text: 'Weekly update' },
+      
       { type: 'paragraph', text: 'Week of …' },
       { type: 'h2', text: 'Highlights' },
       { type: 'bullet', text: '' },

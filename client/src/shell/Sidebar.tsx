@@ -131,7 +131,7 @@ export function Sidebar({ workspace, currentUser }: { workspace: Workspace; curr
 
         <Section title="Direct messages" icon="messages" open={mode === 'dms' || !collapsed.dms} onToggle={() => toggle('dms')} onAdd={() => openModal({ kind: 'newMessage' })} addLabel="New message">
           {dms.map(item)}
-          {!query && <button className="sb-item sb-add" onClick={() => openModal({ kind: 'newMessage' })}><span className="sb-icon"><Icon name="plus" size={15} /></span><span className="sb-label">Add teammates</span></button>}
+          {!query && <button className="sb-item sb-add" onClick={() => openModal({ kind: 'invite' })}><span className="sb-icon"><Icon name="plus" size={15} /></span><span className="sb-label">Add teammates</span></button>}
         </Section>
 
         {mode === 'home' && <ProjectsSidebarSection workspaceId={workspace.id} />}
