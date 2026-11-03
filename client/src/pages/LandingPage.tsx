@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { Link } from 'react-router';
 import { LogoMark } from '../components/Logo';
 import { CATEGORIES, START_COLOR, STATS, TAGLINE } from './landing/content';
-import { Constellation } from './landing/Constellation';
+import { NetworkMap, type DiveState } from './landing/NetworkMap';
 import { Scene } from './landing/Scenes';
 import { HubBurst } from './landing/HubBurst';
 import '../styles/editions.css';
@@ -19,8 +19,13 @@ const mix = (a: number[], b: number[], t: number) => a.map((v, i) => Math.round(
  */
 export function LandingPage() {
   const root = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(-1);
-  const [scrolled, setScrolled] = useState(false);
+  const nav = useRef<HTMLElement>(null);
+  const rail = useRef<HTMLElement>(null);
+  const hero = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const layer = useRef<HTMLDivElement>(null);
+  const dive = useRef<DiveState>({ p: 0, page: hex(START_COLOR) as [number, number, number], view: { t: 0, r: 0, b: 0, l: 0 } });
 
   useEffect(() => {
     const el = root.current!;
@@ -32,6 +37,11 @@ export function LandingPage() {
       for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
     }, { rootMargin: '0px 0px -12% 0px' });
     el.querySelectorAll('.ed-reveal').forEach((n) => reveal.observe(n));
+    const railButtons = [...rail.current!.querySelectorAll('button')];
+    const fadeAway = [...el.querySelectorAll<HTMLElement>('.ed-dive-away')];
+    let lastActive = -2, lastScrolled: boolean | null = null, lastBg = '';
+    // Reads first, then writes, and no inherited custom properties on big subtrees: each scroll frame
+    // touches only the few elements that actually change, so style recalc stays tiny.
     const update = () => {
       const vh = window.innerHeight;
       // Each section's progress runs 0→1 as its top travels from the bottom of the viewport to the middle,
@@ -44,17 +54,42 @@ export function LandingPage() {
         c = mix(c, colors[i], p);
         if (top < vh * 0.5) current = i;
       });
-      el.style.setProperty('--ed-page', `rgb(${c.join(',')})`);
+      const bg = `rgb(${c.join(',')})`;
+      // Hero dive (desktop): the map's clip opens from the panel's box to the whole screen while the
+      // wordmark and index slide away; the map itself zooms into the first hub (see NetworkMap).
+      const desktop = window.matchMedia('(min-width: 961px)').matches;
+      const st = stage.current!, pn = panel.current!, ly = layer.current!;
+      let p = 0;
+      if (desktop) {
+        const hr = hero.current!.getBoundingClientRect();
+        p = Math.min(1, Math.max(0, -hr.top / (hr.height - vh)));
+        const sr = st.getBoundingClientRect(), pr = pn.getBoundingClientRect();
+        const k = 1 - p * p * (3 - 2 * p);
+        const v = { t: (pr.top - sr.top) * k, r: (sr.right - pr.right) * k, b: (sr.bottom - pr.bottom) * k, l: (pr.left - sr.left) * k };
+        ly.style.cssText = `clip-path: inset(${v.t}px ${v.r}px ${v.b}px ${v.l}px)`;
+        dive.current.view = v;
+        for (const f of fadeAway) { f.style.opacity = String(Math.max(0, 1 - (1 - k) * 1.8)); f.style.transform = `translate3d(${-(1 - k) * 90}px, 0, 0)`; }
+      } else {
+        ly.style.cssText = `top: ${pn.offsetTop}px; left: ${pn.offsetLeft}px; width: ${pn.offsetWidth}px; height: ${pn.offsetHeight}px; clip-path: none`;
+        dive.current.view = { t: 0, r: 0, b: 0, l: 0 };
+        for (const f of fadeAway) { f.style.opacity = ''; f.style.transform = ''; }
+      }
+      if (bg !== lastBg) { lastBg = bg; el.style.backgroundColor = bg; nav.current!.style.setProperty('--ed-page', bg); }
+      dive.current.p = p;
+      dive.current.page = c as [number, number, number];
       // Interlude progress: 0 when it enters from below, 1 once its sticky stage has been fully scrolled.
       for (const it of interludes) {
         const r = it.getBoundingClientRect();
         const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height)));
-        it.dataset.progress = p.toFixed(3);
+        const ps = p.toFixed(3);
+        if (it.dataset.progress === ps) continue; // off-screen interludes stay untouched
+        it.dataset.progress = ps;
         // The heading is only on screen once the stage pins (~66%), so the letter fill runs from there.
         it.style.setProperty('--p', Math.min(1, Math.max(0, (p - 0.66) / 0.29)).toFixed(3));
       }
-      setActive(current);
-      setScrolled(window.scrollY > 8);
+      if (current !== lastActive) { lastActive = current; railButtons.forEach((b, i) => b.classList.toggle('on', i === current)); }
+      const scrolled = window.scrollY > 8;
+      if (scrolled !== lastScrolled) { lastScrolled = scrolled; nav.current!.classList.toggle('scrolled', scrolled); }
     };
     // Run straight from the scroll event: it's a handful of rect reads, and waiting a frame lags the fill.
     const onScroll = () => update();
@@ -68,7 +103,7 @@ export function LandingPage() {
 
   return (
     <div className="ed" ref={root}>
-      <header className={`ed-nav${scrolled ? ' scrolled' : ''}`}>
+      <header className="ed-nav" ref={nav}>
         <Link to="/welcome" className="ed-brand">
           <LogoMark size={26} />
           <span><b>Fellowship</b><small>What's new</small></span>
@@ -83,12 +118,13 @@ export function LandingPage() {
         </div>
       </header>
 
-      <section className="ed-hero" aria-labelledby="ed-title">
-        <div className="ed-word-col">
+      <section className="ed-hero" ref={hero} aria-labelledby="ed-title">
+        <div className="ed-hero-stage" ref={stage}>
+        <div className="ed-word-col ed-dive-away">
           <h1 id="ed-title" className="ed-word">Fellowship</h1>
           <p className="ed-tagline">{TAGLINE}</p>
         </div>
-        <aside className="ed-side">
+        <aside className="ed-side ed-dive-away">
           <ol className="ed-index">
             {CATEGORIES.map((c, i) => (
               <li key={c.id}><button onClick={() => jump(c.id)}><span>{c.name}</span><span>{String(i + 1).padStart(2, '0')}</span></button></li>
@@ -98,13 +134,15 @@ export function LandingPage() {
             <div key={s.label} className="ed-stat"><b>{s.value}</b><p>{s.label}</p></div>
           ))}
         </aside>
-        <div className="ed-panel"><Constellation /></div>
+        <div className="ed-panel" ref={panel} />
+        <div className="ed-map-layer" ref={layer}><NetworkMap dive={dive} /></div>
+        </div>
       </section>
 
       <div className="ed-body">
-        <nav className="ed-rail" aria-label="Sections">
-          {CATEGORIES.map((c, i) => (
-            <button key={c.id} className={i === active ? 'on' : ''} onClick={() => jump(c.id)}>
+        <nav className="ed-rail" ref={rail} aria-label="Sections">
+          {CATEGORIES.map((c) => (
+            <button key={c.id} onClick={() => jump(c.id)}>
               <span className="ed-rail-dot" />{c.name}
             </button>
           ))}
