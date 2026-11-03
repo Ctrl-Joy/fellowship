@@ -80,6 +80,8 @@ export function createAuth(db: Db) {
   function setSessionCookie(reply: FastifyReply, token: string, expiresAt: number) {
     reply.setCookie(SESSION_COOKIE, token, {
       path: '/', httpOnly: true, sameSite: 'lax', expires: new Date(expiresAt),
+      // Hosted deployments are HTTPS-only; local dev (and phones on the LAN) use plain http.
+      secure: process.env.NODE_ENV === 'production',
     });
   }
 

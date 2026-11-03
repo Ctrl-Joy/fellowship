@@ -1,0 +1,36 @@
+# Render Blueprint: one web service that serves the API, WebSockets and the built web client.
+# Deploy: Render dashboard → New → Blueprint → pick this repository.
+services:
+  - type: web
+    name: fellowship
+    runtime: node
+    # A persistent disk (for the SQLite database and uploads) needs a paid instance.
+    plan: starter
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start -w server
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      # Listen on every interface, on the port Render routes traffic to.
+      - key: HOST
+        value: 0.0.0.0
+      - key: API_PORT
+        value: "10000"
+      # Database file; uploads are stored next to it (/var/data/uploads).
+      - key: FELLOWSHIP_DB
+        value: /var/data/fellowship.db
+      # Email verification. Set these two in the Render dashboard (they are secrets).
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        value: Fellowship
+    disk:
+      name: fellowship-data
+      mountPath: /var/data
+      sizeGB: 1

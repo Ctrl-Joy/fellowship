@@ -46,7 +46,8 @@ export async function buildApp(opts: BuildOptions = {}): Promise<FastifyInstance
     uploadsDir: opts.uploadsDir ?? join(dataDir, 'uploads'),
     port: opts.port ?? Number(process.env.API_PORT ?? 4000),
     isTest: opts.isTest ?? false,
-    appUrl: (process.env.APP_URL || 'http://localhost:5173').replace(/\/+$/, ''),
+    // Render sets RENDER_EXTERNAL_URL (https://<service>.onrender.com); APP_URL overrides it.
+    appUrl: (process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173').replace(/\/+$/, ''),
   };
 
   const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 5 * 1024 * 1024 });
