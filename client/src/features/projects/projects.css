@@ -1,13 +1,15 @@
 /* Projects area — shared pieces. Views add their own rules below their section comment. */
 .pj-type, .pj-prio { flex: none; display: inline-block; vertical-align: middle; }
-.pj-key { color: var(--link); font-size: 13px; font-weight: 600; white-space: nowrap; }
-.pj-key:hover { text-decoration: underline; }
-.pj-status { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 4px; font-size: 11.5px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; position: relative; }
-.pj-status-todo { background: rgba(138, 143, 152, 0.22); color: var(--fg); }
-.pj-status-in_progress { background: rgba(76, 141, 246, 0.2); color: #8DB6FF; }
-.pj-status-in_review { background: rgba(181, 124, 240, 0.2); color: #D3AEFF; }
-.pj-status-done { background: rgba(93, 187, 99, 0.2); color: #8FDB94; }
+.pj-key { color: var(--fg-muted); font-size: 12.5px; font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pj-key:hover { color: var(--fg-strong); text-decoration: underline; }
+/* Status badge: a soft tinted pill with a leading dot, sentence case. */
+.pj-status { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  white-space: nowrap; position: relative; }
+.pj-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; opacity: 0.9; }
+.pj-status-todo { background: rgba(138, 143, 152, 0.16); color: var(--fg-muted); }
+.pj-status-in_progress { background: rgba(76, 141, 246, 0.14); color: #8DB6FF; }
+.pj-status-in_review { background: rgba(181, 124, 240, 0.14); color: #D3AEFF; }
+.pj-status-done { background: rgba(93, 187, 99, 0.14); color: #8FDB94; }
 :root[data-theme='light'] .pj-status-in_progress { color: #1F5FC7; }
 :root[data-theme='light'] .pj-status-in_review { color: #7A3FC0; }
 :root[data-theme='light'] .pj-status-done { color: #2F7D33; }

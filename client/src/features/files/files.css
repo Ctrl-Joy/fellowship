@@ -7,7 +7,7 @@
   padding: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   background: var(--bg-subtle); cursor: zoom-in; max-width: 360px;
 }
-.att-thumb img { display: block; max-width: 360px; max-height: 240px; object-fit: cover; }
+.att-thumb img { display: block; width: auto; height: auto; max-width: 360px; max-height: 240px; object-fit: cover; }
 .att-thumb:focus-visible { outline: 0; box-shadow: var(--focus-field); }
 
 .att-video { width: min(420px, 100%); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #000; }
@@ -43,7 +43,7 @@ a.att-name:hover { text-decoration: underline; }
   position: fixed; inset: 0; z-index: 1000; background: rgba(10, 10, 10, 0.9);
   display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px;
 }
-.att-lightbox img { max-width: min(1100px, 100%); max-height: calc(100vh - 90px); object-fit: contain; border-radius: 6px; }
+.att-lightbox img { max-width: min(1100px, 100%); max-height: calc(100dvh - 90px); object-fit: contain; border-radius: 6px; }
 .att-lightbox-bar { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: #fff; }
 .att-lightbox-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
 .att-lightbox-btn {

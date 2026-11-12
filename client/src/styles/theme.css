@@ -1,3 +1,6 @@
+/* A local stand-in with Inter's metrics, so text does not reflow when the web font arrives. */
+@font-face { font-family: 'Inter Fallback'; src: local('Arial'), local('Helvetica'), local('Roboto'); size-adjust: 107.12%; ascent-override: 90.44%; descent-override: 22.52%; line-gap-override: 0%; }
+
 /* Fellowship design tokens: warm neutrals with one red-orange accent (#FA4C0D on the landing page).
    The accent is reserved for primary actions, links, focus and unread cues; chrome stays neutral. */
 :root {
@@ -52,7 +55,7 @@
   --radius-sm: 7px;
   --radius-xs: 5px;
   --ease: cubic-bezier(0.2, 0, 0, 1);
-  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, Menlo, monospace;
   color-scheme: light;
 }

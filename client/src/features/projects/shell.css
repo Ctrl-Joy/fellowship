@@ -123,7 +123,7 @@
 .pj-empty-art { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--bg-hover); color: var(--fg-muted); }
 
 /* project header */
-.pj-project.pj-full { position: fixed; inset: 0; z-index: 60; height: 100vh; }
+.pj-project.pj-full { position: fixed; inset: 0; z-index: 60; height: 100vh; height: 100dvh; }
 .pj-proj-head { padding: 14px 24px 0; }
 .pj-proj-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; min-height: 40px; flex-wrap: wrap; }
 .pj-proj-name { font-size: 19px; font-weight: 700; letter-spacing: -0.015em; color: var(--fg-strong); padding: 2px 6px; margin-left: 2px; border-radius: 6px; cursor: text;

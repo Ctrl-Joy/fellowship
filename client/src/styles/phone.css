@@ -1,0 +1,123 @@
+/*
+ * Phone layer. Everything here applies at 760px and below, on top of the desktop styles.
+ * Selectors start with :root so they also win over feature stylesheets that load later.
+ * Goals: 44px tap targets, 16px inputs (no zoom on focus), safe-area insets, no sideways page scroll.
+ */
+@media (max-width: 760px) {
+  :root { --tap: 44px; -webkit-text-size-adjust: 100%; }
+  html, body { overscroll-behavior-y: none; }
+  :root * { -webkit-tap-highlight-color: transparent; }
+
+  /* ---- shell: fills the visible viewport, sits above the keyboard, respects notches ---- */
+  :root .app, :root .app.with-panel {
+    height: var(--vvh, 100dvh);
+    grid-template-rows: calc(52px + env(safe-area-inset-top)) minmax(0, 1fr);
+    padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+  }
+  :root .topbar { padding-top: env(safe-area-inset-top); }
+  :root .composer-wrap { padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+  :root .rail { padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: env(safe-area-inset-bottom); }
+  :root .sidebar { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); box-shadow: none; }
+  :root .app.nav-open .sidebar { box-shadow: 8px 0 24px rgba(0, 0, 0, 0.3); }
+  :root .rail, :root .sidebar { transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+  :root .app:not(.nav-open) .rail, :root .app:not(.nav-open) .sidebar { will-change: auto; visibility: hidden; transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.24s; }
+  :root .nav-scrim { transition: opacity 0.2s ease; }
+  :root .app.with-panel .right { top: 0; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+  :root .view-scroll, :root .tab-body, :root .msg-list { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+  /* ---- inputs: 16px so iOS does not zoom, and tall enough to tap ---- */
+  :root input:not([type='checkbox'], [type='radio'], [type='range'], [type='color']),
+  :root textarea, :root select, :root [contenteditable='true'] { font-size: 16px; }
+  :root .input, :root select, :root .srch input, :root .pj-search input, :root .tl-search input { min-height: var(--tap); }
+  :root textarea.input { min-height: 88px; }
+
+  /* ---- tap targets ---- */
+  :root .btn, :root .pj-btn, :root .tl-link, :root .tab-add { min-height: var(--tap); }
+  :root .btn, :root .pj-btn { padding-left: 14px; padding-right: 14px; }
+  :root .icon-btn, :root .sb-head-btn, :root .topbar-menu, :root .pj-icon-btn, :root .sb-section-add, :root .sb-add {
+    min-width: var(--tap); min-height: var(--tap); width: auto; height: auto;
+  }
+  :root .tab, :root .pj-tab, :root .seg button, :root .hm-tab, :root [role='tab'] { min-height: var(--tap); }
+  :root .sb-item, :root .sb-ws, :root .sb-section-head, :root .menu button, :root .menu a, :root .autocomplete li,
+  :root .srch-menu li, :root .sw-item, :root [role='option'], :root [role='menuitem'] { min-height: var(--tap); }
+  :root .menu button, :root .menu a { display: flex; align-items: center; }
+  :root .rail-btn { min-height: 52px; }
+  :root .rail-ws, :root .rail-add, :root .rail-me { min-width: var(--tap); min-height: var(--tap); }
+  /* Small inline chips keep their look; an invisible pad makes the touch area 44px. */
+  :root .reaction, :root .tag-btn, :root .chip, :root .hm-chip, :root .pj-chip, :root .pj-epic-chip, :root .pj-cell-btn,
+  :root .pj-key, :root .hm-saved-del, :root .thread-summary, :root input[type='checkbox'], :root input[type='radio'], :root .pj-col-menu-btn {
+    position: relative;
+  }
+  :root .reaction::after, :root .tag-btn::after, :root .chip::after, :root .hm-chip::after, :root .pj-chip::after,
+  :root .pj-cell-btn::after, :root .hm-saved-del::after, :root .pj-col-menu-btn::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, var(--tap)); height: var(--tap); transform: translate(-50%, -50%);
+  }
+  :root input[type='checkbox'], :root input[type='radio'] { width: 20px; height: 20px; flex: none; }
+  :root label:has(> input[type='checkbox']), :root label:has(> input[type='radio']) { min-height: var(--tap); display: flex; align-items: center; gap: 10px; }
+  :root .tab, :root .pj-tab-btn, :root .seg-btn, :root .tab-add, :root .send-btn { min-width: var(--tap); justify-content: center; }
+  :root .send-btn, :root .conv-title, :root .composer-input, :root .input-prefix input, :root .pj-members-btn, :root .pj-create-open,
+  :root .hm-saved-open, :root .pj-space-name, :root .main button:not([class]), :root .wf-tabs button { min-height: var(--tap); }
+  :root .pj-space-name { display: inline-flex; align-items: center; }
+  :root .msg-author, :root .avatar-btn, :root .pj-key, :root .hm-row-summary, :root .pj-star, :root .pj-th-btn, :root .pj-tab-menu-btn,
+  :root .pjs-people-av, :root .pjs-people-more, :root .pj-people-btn, :root .pj-expand, :root .tl-chev, :root .srch-clear,
+  :root .dv-metric-link, :root .main a:not([class]) { position: relative; }
+  :root .msg-text a:not([class]), :root .md a:not([class]) { position: static; }
+  :root .msg-author::after, :root .avatar-btn::after, :root .pj-key::after, :root .hm-row-summary::after, :root .pj-star::after,
+  :root .pj-th-btn::after, :root .pj-tab-menu-btn::after, :root .pjs-people-av::after, :root .pjs-people-more::after,
+  :root .pj-people-btn::after, :root .pj-expand::after, :root .tl-chev::after, :root .srch-clear::after, :root .dv-metric-link::after,
+  :root .pj-epic-chip::after, :root .main a:not([class])::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, var(--tap)); height: var(--tap); transform: translate(-50%, -50%);
+  }
+  :root .msg-text a:not([class])::after, :root .md a:not([class])::after { content: none; }
+  /* Wide tables scroll inside their own box instead of pushing the page sideways. */
+  :root .pj-table-wrap, :root .hm-table-wrap { max-width: 100%; overflow-x: auto; }
+  /* Dashboards list: name and actions only; the detail columns do not fit a phone. */
+  :root .pjd-table { table-layout: fixed; }
+  :root .pjd-table th:nth-child(n+2):not(:last-child), :root .pjd-table td:nth-child(n+2):not(:last-child) { display: none; }
+  :root .pjd-table th:last-child, :root .pjd-table td:last-child { width: 150px; text-align: right; white-space: nowrap; }
+  :root .main { min-width: 0; overflow-x: clip; }
+  :root input:not([type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file'], [type='hidden']), :root .tl-create { min-height: var(--tap); }
+  :root .pj-row-act { position: relative; }
+  :root .pj-row-act::after { content: ''; position: absolute; left: 50%; top: 50%; width: var(--tap); height: var(--tap); transform: translate(-50%, -50%); }
+
+  /* ---- conversation ---- */
+  :root .conv-tabs, :root .tabs { overflow-x: auto; scrollbar-width: none; }
+  :root .msg-toolbar { top: -22px; right: 8px; gap: 0; }
+  :root .msg-toolbar .icon-btn { width: var(--tap); height: var(--tap); }
+  :root .composer-bar { gap: 0; justify-content: space-between; padding: 0 2px 2px; }
+  :root .composer-bar .icon-btn, :root .composer-toolbar .icon-btn { width: var(--tap); height: var(--tap); }
+  :root .composer-bar .composer-sep { display: none; }
+  :root .composer-input { padding: 10px 14px 4px; }
+  :root .hide-phone { display: none !important; }
+  :root .view-head { flex-wrap: wrap; row-gap: 4px; }
+  :root .view-head h2 { flex: 1 1 auto; min-width: 0; }
+
+  /* ---- projects: one board column per screen, swiped sideways; a leaner space header ---- */
+  :root .pj-board-scroll { padding: 0 14px 14px; scroll-snap-type: x proximity; scroll-padding-left: 14px; overscroll-behavior: contain; }
+  :root .pj-col-head, :root .pj-cell { width: calc(100vw - 64px); max-width: 340px; scroll-snap-align: start; }
+  :root .pj-col-head.collapsed, :root .pj-cell.collapsed { width: 46px; }
+  :root .pj-card { padding: 12px; }
+  :root .pj-insights { position: fixed; inset: 0; width: auto; z-index: 40; padding-top: env(safe-area-inset-top); }
+  :root .pj-proj-row > .pj-btn, :root .pj-proj-row > .icon-btn[title='Give feedback'], :root .pj-proj-row > .icon-btn[aria-pressed] { display: none; }
+  :root .pj-tabs-wrap { overflow-x: auto; scrollbar-width: none; }
+  :root .pj-toolbar { gap: 8px; flex-wrap: wrap; }
+
+  /* ---- dialogs and menus fit the screen and can always be closed ---- */
+  :root .modal-backdrop { padding: max(12px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom)); align-items: flex-end; }
+  :root .modal { max-height: calc(var(--vvh, 100dvh) - 24px); max-width: none !important; border-radius: 16px; }
+  :root .modal-body { overflow-y: auto; overscroll-behavior: contain; }
+  :root .modal-foot { position: sticky; bottom: 0; background: var(--bg-elevated); padding-top: 10px; flex-wrap: wrap; }
+  :root .modal-foot .btn { flex: 1 1 auto; }
+  :root .menu { max-width: calc(100vw - 16px); max-height: calc(var(--vvh, 100dvh) - 120px); overflow-y: auto; }
+  :root .reaction-pop, :root .epk { max-width: calc(100vw - 16px); }
+  :root .huddle-window, :root .huddle-dock { right: 8px; left: 8px; bottom: max(8px, env(safe-area-inset-bottom)); width: auto; max-height: calc(var(--vvh, 100dvh) - 16px); }
+
+  /* ---- no heavy effects on scrolling content ---- */
+  :root .msg, :root .pj-card, :root .browse-item, :root .hm-row { box-shadow: none; }
+  :root .day-divider span { box-shadow: none; }
+}
+
+/* Motion only moves or fades; nothing animates layout. */
+@media (prefers-reduced-motion: reduce) {
+  :root .rail, :root .sidebar, :root .nav-scrim { transition: none; }
+}
