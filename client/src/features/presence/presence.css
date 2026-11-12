@@ -50,5 +50,5 @@
 .edit-grid .span-2 { grid-column: span 2; }
 @media (max-width: 560px) { .edit-grid { grid-template-columns: 1fr; } .edit-grid .span-2 { grid-column: auto; } }
 .edit-error { color: var(--mention); font-size: 13px; margin-top: 10px; }
-.btn-signout { color: var(--mention); border-color: color-mix(in srgb, var(--mention) 45%, transparent); border-radius: 999px; }
+.btn-signout { color: var(--mention); border-color: color-mix(in srgb, var(--mention) 45%, transparent); }
 .btn-signout:hover:not(:disabled) { background: var(--mention); border-color: var(--mention); color: #fff; }

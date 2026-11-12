@@ -4,7 +4,7 @@
 .tl-spacer { flex: 1; }
 .tl-search { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px; width: 220px; border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm); color: var(--fg-muted); background: var(--bg); }
-.tl-search:focus-within { border-color: var(--brand); box-shadow: var(--focus); }
+.tl-search:focus-within { border-color: var(--brand); box-shadow: var(--focus-field); }
 .tl-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); font-size: 14px; }
 .tl-search-x { display: inline-flex; color: var(--fg-faint); }
 .tl-search-x:hover { color: var(--fg); }
@@ -53,13 +53,13 @@
 .tl-gridline.strong { opacity: 1; background: var(--border-strong); }
 .tl-weekend { position: absolute; top: 0; bottom: 0; background: var(--bg-subtle); }
 .tl-today { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--mention); z-index: 2; pointer-events: none; }
-.tl-today span { position: absolute; top: 2px; left: 4px; font-size: 10.5px; font-weight: 800; color: var(--mention); text-transform: uppercase; letter-spacing: 0.04em; }
+.tl-today span { position: absolute; top: 2px; left: 4px; font-size: 10.5px; font-weight: 700; color: var(--mention); text-transform: uppercase; letter-spacing: 0.04em; }
 
 .tl-row { position: relative; display: flex; }
 .tl-left { position: sticky; left: 0; z-index: 4; flex: none; display: flex; align-items: center; background: var(--bg); border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border-strong); cursor: pointer; font-size: 14px; }
 .tl-row:hover .tl-left { background: var(--bg-hover); }
-.tl-left:focus-visible { outline: none; box-shadow: inset var(--focus); }
+.tl-left:focus-visible { outline: none; box-shadow: inset var(--focus-field); }
 .tl-row.context .tl-summary { color: var(--fg-muted); }
 .tl-lane { position: relative; flex: none; border-bottom: 1px solid var(--border); cursor: pointer; }
 .tl-row:hover .tl-lane { background: color-mix(in srgb, var(--bg-hover) 55%, transparent); }
@@ -108,7 +108,7 @@ body.tl-dragging, body.tl-dragging * { cursor: grabbing !important; user-select:
 .tl-create { display: inline-flex; align-items: center; gap: 6px; color: var(--fg-muted); font-weight: 600; font-size: 14px; padding: 4px 8px; margin-left: -8px; border-radius: var(--radius-sm); }
 .tl-create:hover { background: var(--bg-hover); color: var(--fg); }
 .tl-create-form { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; margin-right: 10px; }
-.tl-create-input { flex: 1; min-width: 0; height: 28px; padding: 0 8px; border: 1px solid var(--brand); border-radius: var(--radius-sm); background: var(--bg); color: var(--fg); outline: none; box-shadow: var(--focus); }
+.tl-create-input { flex: 1; min-width: 0; height: 28px; padding: 0 8px; border: 1px solid var(--brand); border-radius: var(--radius-sm); background: var(--bg); color: var(--fg); outline: none; box-shadow: var(--focus-field); }
 .tl-count { font-size: 12.5px; color: var(--fg-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .tl-empty { position: absolute; top: 110px; display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius);
@@ -123,5 +123,5 @@ body.tl-dragging, body.tl-dragging * { cursor: grabbing !important; user-select:
 .tl-zoom button { height: 28px; padding: 0 10px; border-radius: 6px; font-size: 13px; font-weight: 600; color: var(--fg-muted); }
 .tl-zoom button:hover { background: var(--bg-hover); color: var(--fg); }
 .tl-zoom button[aria-pressed='true'] { background: var(--brand-soft); color: var(--fg-strong); }
-.tl-zoom button:focus-visible { outline: none; box-shadow: var(--focus); }
+.tl-zoom button:focus-visible { outline: none; box-shadow: var(--focus-field); }
 .tl-zoom-sep { width: 1px; height: 18px; background: var(--border-strong); margin: 0 3px; }

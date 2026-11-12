@@ -10,14 +10,14 @@
   width: 100%; display: flex; gap: 12px; align-items: flex-start; text-align: left;
   padding: 10px 10px; border-radius: var(--radius-sm); color: var(--fg);
 }
-.act-main:focus-visible { outline: none; box-shadow: var(--focus); }
+.act-main:focus-visible { outline: none; box-shadow: var(--focus-field); }
 .act-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
-.act-title { font-size: 14.5px; line-height: 1.35; }
-.act-item.unread .act-title { font-weight: 700; }
-.act-preview { color: var(--fg-muted); font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.act-title { font-size: 14px; line-height: 1.4; }
+.act-item.unread .act-title { font-weight: 600; color: var(--fg-strong); }
+.act-preview { color: var(--fg-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .act-meta { display: flex; gap: 4px; flex-wrap: wrap; }
 .act-quiet { color: var(--fg-faint); }
-.act-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); margin-top: 8px; flex: none; }
+.act-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); margin-top: 7px; flex: none; }
 .act-badge { margin-left: auto; }
 
 /* Notification preferences */

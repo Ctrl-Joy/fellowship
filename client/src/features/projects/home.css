@@ -1,12 +1,12 @@
 /* For you, Space docs and Filters. */
 .hm { display: flex; flex-direction: column; gap: 26px; padding: 24px 28px 48px; max-width: 1100px; color: var(--fg); }
 .hm-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.hm-greeting { font-size: 24px; font-weight: 700; color: var(--fg-strong); margin: 0; line-height: 1.2; }
+.hm-greeting { font-size: 20px; font-weight: 700; letter-spacing: -0.015em; color: var(--fg-strong); margin: 0; line-height: 1.25; }
 .hm-sub { font-size: 13.5px; color: var(--fg-muted); margin: 4px 0 0; line-height: 1.5; }
 .hm-title { font-size: 20px; font-weight: 700; color: var(--fg-strong); margin: 0 0 4px; }
 .hm-section { display: flex; flex-direction: column; gap: 10px; }
 .hm-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.hm-section-title { font-size: 14px; font-weight: 700; color: var(--fg-strong); margin: 0; }
+.hm-section-title { font-size: 13px; font-weight: 600; color: var(--fg-muted); margin: 0; }
 .hm-link { font-size: 13px; color: var(--link); }
 .hm-link:hover { text-decoration: underline; }
 .hm-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-elevated); }
@@ -22,7 +22,7 @@
 .hm-empty-title { font-size: 16px; font-weight: 700; color: var(--fg-strong); margin: 0 0 6px; }
 .hm-empty-text { margin: 0 0 14px; line-height: 1.5; }
 .hm-empty code { font-family: var(--mono); font-size: 12.5px; background: var(--code-bg); color: var(--code-fg); padding: 1px 5px; border-radius: 4px; }
-.hm-loading { padding: 40px; text-align: center; color: var(--fg-muted); }
+.hm-loading { padding: 40px; text-align: center; color: var(--fg-muted); font-size: 13.5px; }
 .hm-error, .hm-notice { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--mention-soft); color: var(--mention); font-size: 13px; }
 
 .hm-onboard { display: flex; flex-direction: column; gap: 14px; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-subtle); }
@@ -37,7 +37,7 @@
 .hm-space-name { font-weight: 700; color: var(--fg-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hm-space-key { font-size: 12px; color: var(--fg-muted); font-weight: 600; }
 .hm-progress { height: 6px; border-radius: 999px; background: var(--bg-hover); overflow: hidden; }
-.hm-progress-bar { display: block; height: 100%; background: var(--brand-strong); border-radius: 999px; }
+.hm-progress-bar { display: block; height: 100%; background: var(--success); border-radius: 999px; }
 .hm-progress-text { font-size: 12px; color: var(--fg-muted); }
 
 /* Space docs */
@@ -91,6 +91,7 @@
 .hm-table .pj-assignee-name { font-size: 13px; }
 .hm-priority { display: inline-flex; align-items: center; gap: 5px; }
 
+@media (max-width: 1000px) { .hm-row-space { display: none; } }
 @media (max-width: 760px) {
   .hm, .hm-docs { padding: 16px; }
   .hm-filters { grid-template-columns: 1fr; }

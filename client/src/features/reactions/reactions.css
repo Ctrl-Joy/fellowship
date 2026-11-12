@@ -25,7 +25,7 @@
   width: 100%; height: 30px; padding: 0 10px; border-radius: 7px;
   border: 1px solid var(--border); background: var(--bg); color: var(--fg); font: inherit; font-size: 13px;
 }
-.epk-input:focus { outline: 2px solid var(--focus); outline-offset: 0; }
+.epk-input:focus { outline: 2px solid var(--focus-field); outline-offset: 0; }
 .epk-tabs { display: flex; gap: 2px; padding: 0 8px 4px; border-bottom: 1px solid var(--border); overflow-x: auto; }
 .epk-tab { width: 30px; height: 28px; border-radius: 6px; font-size: 16px; flex: 0 0 auto; }
 .epk-tab:hover { background: var(--bg-hover); }

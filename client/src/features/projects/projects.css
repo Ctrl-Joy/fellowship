@@ -13,7 +13,7 @@
 :root[data-theme='light'] .pj-status-done { color: #2F7D33; }
 .pj-status-select { cursor: pointer; }
 .pj-status-select select { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.pj-status-select:focus-within { box-shadow: var(--focus); }
+.pj-status-select:focus-within { box-shadow: var(--focus-field); }
 .pj-assignee { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
 .pj-assignee-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pj-unassigned { display: inline-block; flex: none; border-radius: 50%; border: 1.5px dashed var(--fg-faint); }

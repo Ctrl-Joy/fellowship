@@ -91,7 +91,7 @@
 }
 .huddle-controls.compact .huddle-ctl { width: 30px; height: 30px; }
 .huddle-ctl:hover { background: var(--bg-hover); }
-.huddle-ctl:focus-visible { box-shadow: var(--focus); outline: none; }
+.huddle-ctl:focus-visible { box-shadow: var(--focus-field); outline: none; }
 .huddle-ctl.off { color: var(--mention); border-color: var(--mention); background: var(--mention-soft); }
 .huddle-ctl.on { color: #fff; background: var(--brand); border-color: var(--brand); }
 .huddle-ctl.leave { color: #fff; background: var(--mention); border-color: var(--mention); }
@@ -140,4 +140,9 @@
 @media (max-width: 640px) {
   .huddle-win { right: 8px; left: 8px; bottom: 8px; width: auto; }
   .huddle-expanded { inset: 8px; }
+}
+
+/* The call window header, video tiles and docked bar are a dark media surface in both themes. */
+.huddle-head, .huddle-tile, .huddle-dock {
+  --sidebar-bg: #151514; --sidebar-fg: #A9A29D; --sidebar-fg-strong: #F5F2F0; --sidebar-hover: rgba(255, 255, 255, 0.08);
 }

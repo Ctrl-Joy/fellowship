@@ -7,7 +7,7 @@
 .pjs-people-av, .pjs-people-more { position: relative; margin-left: -6px; border-radius: 9px; border: 2px solid var(--bg); display: inline-flex;
   transition: transform 0.12s; background: var(--bg); }
 .pjs-people-av:hover, .pjs-people-more:hover { transform: translateY(-2px); z-index: 2; }
-.pjs-people-av:focus-visible, .pjs-people-more:focus-visible { box-shadow: var(--focus); outline: none; z-index: 3; }
+.pjs-people-av:focus-visible, .pjs-people-more:focus-visible { box-shadow: var(--focus-field); outline: none; z-index: 3; }
 .pjs-people-av.on { border-color: var(--brand-strong); box-shadow: 0 0 0 1px var(--brand-strong); z-index: 1; }
 .pjs-people-av .avatar { display: block; }
 .pjs-people-more { width: 32px; height: 32px; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
@@ -25,12 +25,13 @@
 
 /* ---------- summary tab ---------- */
 .pjs-root { padding: 16px 24px 32px; max-width: 1280px; margin: 0 auto; width: 100%; }
-.pjs-banner { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 16px; border-radius: var(--radius);
-  background: var(--brand-soft); border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent); }
-.pjs-banner-icon { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: var(--brand); color: #fff; }
+.pjs-banner { display: flex; align-items: center; gap: 10px 14px; padding: 12px 14px; margin-bottom: 16px; border-radius: var(--radius);
+  background: var(--bg-subtle); border: 1px solid var(--border); }
+.pjs-banner-icon { flex: none; width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); }
 .pjs-banner-text { flex: 1; min-width: 0; }
-.pjs-banner-text strong { display: block; color: var(--fg-strong); font-size: 15px; }
-.pjs-banner-text span { color: var(--fg-muted); font-size: 13.5px; }
+@media (max-width: 600px) { .pjs-banner { flex-wrap: wrap; } .pjs-banner-text { flex: 1 1 calc(100% - 60px); } }
+.pjs-banner-text strong { display: block; color: var(--fg-strong); font-size: 14px; font-weight: 600; }
+.pjs-banner-text span { color: var(--fg-muted); font-size: 13px; }
 .pjs-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .pjs-toolbar-spacer { flex: 1; }
 .pjs-range { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; }
@@ -38,7 +39,7 @@
 .pjs-range button + button { border-left: 1px solid var(--border-strong); }
 .pjs-range button:hover { background: var(--bg-hover); color: var(--fg); }
 .pjs-range button[aria-pressed='true'] { background: var(--brand-soft); color: var(--fg-strong); }
-.pjs-range button:focus-visible { box-shadow: inset var(--focus); outline: none; }
+.pjs-range button:focus-visible { box-shadow: inset var(--focus-field); outline: none; }
 .pjs-loading-dot { font-size: 12.5px; color: var(--fg-faint); }
 .pjs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .pjs-grid > .pjs-wide, .pjs-grid > .pjs-stats { grid-column: 1 / -1; }
@@ -47,7 +48,7 @@
 .pjs-empty { text-align: center; padding: 64px 24px; border: 1px dashed var(--border-strong); border-radius: 12px; background: var(--bg-subtle); }
 .pjs-empty h3 { font-size: 20px; color: var(--fg-strong); margin-bottom: 6px; }
 .pjs-empty p { color: var(--fg-muted); margin-bottom: 18px; }
-.pjs-empty-art { width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 16px; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand-strong); }
+.pjs-empty-art { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 14px; display: grid; place-items: center; background: var(--bg-hover); color: var(--fg-muted); }
 .pjs-feedback { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 28px; color: var(--fg-muted); font-size: 14px; }
 .pjs-thumb { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 16px; }
 .pjs-thumb:hover { background: var(--bg-hover); }
@@ -94,19 +95,19 @@
 .pjs-donut { flex: none; overflow: visible; }
 .pjs-donut-seg { cursor: pointer; transition: stroke-width 0.12s, opacity 0.12s; }
 .pjs-donut-seg.dim { opacity: 0.35; }
-.pjs-donut-n { font-size: 30px; font-weight: 800; fill: var(--fg-strong); }
+.pjs-donut-n { font-size: 30px; font-weight: 700; fill: var(--fg-strong); }
 .pjs-donut-t { font-size: 11.5px; fill: var(--fg-muted); }
 .pjs-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; min-width: 170px; }
 .pjs-legend-item { width: 100%; display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: var(--radius-sm); font-size: 14px; }
 .pjs-legend-item:hover, .pjs-legend-item.on { background: var(--bg-hover); }
-.pjs-legend-item:focus-visible { box-shadow: var(--focus); outline: none; }
+.pjs-legend-item:focus-visible { box-shadow: var(--focus-field); outline: none; }
 .pjs-legend-label { flex: 1; color: var(--fg); }
 .pjs-legend-n { color: var(--fg-strong); font-weight: 700; font-variant-numeric: tabular-nums; }
 .pjs-swatch { flex: none; width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 
 /* activity */
 .pjs-feed { max-height: 330px; overflow-y: auto; margin-right: -8px; padding-right: 8px; }
-.pjs-feed:focus-visible { outline: none; box-shadow: var(--focus); border-radius: var(--radius-sm); }
+.pjs-feed:focus-visible { outline: none; box-shadow: var(--focus-field); border-radius: var(--radius-sm); }
 .pjs-feed ul { list-style: none; margin: 0; padding: 0; }
 .pjs-feed-day { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-faint); margin: 10px 0 6px; position: sticky; top: 0; background: var(--bg-subtle); padding: 2px 0; z-index: 1; }
 .pjs-feed > div:first-child .pjs-feed-day { margin-top: 0; }
@@ -155,7 +156,7 @@
 .pjs-epic-seg:first-child { border-radius: 4px 0 0 4px; }
 .pjs-epic-seg:last-child { border-radius: 0 4px 4px 0; }
 .pjs-epic-seg:only-child { border-radius: 4px; }
-.pjs-epic-seg span { font-size: 11.5px; font-weight: 800; color: #0E1412; }
+.pjs-epic-seg span { font-size: 11.5px; font-weight: 700; color: #0E1412; }
 
 /* ---------- dashboards ---------- */
 .pjd-root { padding: 20px 28px 40px; max-width: 1280px; margin: 0 auto; width: 100%; }
@@ -175,16 +176,16 @@
 .pjd-table a { color: var(--fg-strong); font-weight: 700; }
 .pjd-table a:hover { text-decoration: underline; color: var(--link); }
 .pjd-muted { color: var(--fg-muted); }
-.pjd-name-btn { font-size: 24px; font-weight: 800; color: var(--fg-strong); padding: 2px 6px; margin-left: -6px; border-radius: var(--radius-sm); }
+.pjd-name-btn { font-size: 24px; font-weight: 700; color: var(--fg-strong); padding: 2px 6px; margin-left: -6px; border-radius: var(--radius-sm); }
 .pjd-name-btn:hover { background: var(--bg-hover); }
-.pjd-name-input { font-size: 22px; font-weight: 800; max-width: 460px; }
+.pjd-name-input { font-size: 22px; font-weight: 700; max-width: 460px; }
 .pjd-readonly { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg-muted); padding: 4px 10px; border-radius: 999px; background: var(--bg-hover); }
 .pjd-widget-tools { display: inline-flex; gap: 0; margin-left: 4px; }
 .pjd-widget-tools .icon-btn { width: 26px; height: 26px; }
 .pjd-types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
 .pjd-type { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius); text-align: left; }
 .pjd-type:hover { background: var(--bg-hover); }
-.pjd-type[aria-checked='true'] { border-color: var(--brand); box-shadow: var(--focus); background: var(--brand-soft); }
+.pjd-type[aria-checked='true'] { border-color: var(--brand); box-shadow: var(--focus-field); background: var(--brand-soft); }
 .pjd-type strong { font-size: 14px; color: var(--fg-strong); }
 .pjd-type span { font-size: 12.5px; color: var(--fg-muted); }
 .pjd-form { display: flex; flex-direction: column; gap: 12px; }

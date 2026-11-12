@@ -1,47 +1,58 @@
-/* Fellowship design tokens, matched to the landing page: red-orange #FA4C0D on warm near-black neutrals. */
+/* Fellowship design tokens: warm neutrals with one red-orange accent (#FA4C0D on the landing page).
+   The accent is reserved for primary actions, links, focus and unread cues; chrome stays neutral. */
 :root {
   --brand: #E8430A;
   --brand-strong: #C93A08;
   --brand-soft: #FDE9E1;
+  --on-brand: #FFFFFF;
   --accent: #F2A541;
   --accent-soft: #FDF1DE;
-  --mention: #E2574C;
+  --mention: #D9483C;
   --mention-soft: #FCE7E5;
+  --success: #2F8F4E;
 
-  --sidebar-bg: #141413;
-  --sidebar-fg: #B4AEAA;
-  --sidebar-fg-strong: #FFFFFF;
-  --sidebar-hover: rgba(255, 255, 255, 0.06);
-  --sidebar-active: rgba(250, 76, 13, 0.22);
-  --rail-bg: #0D0D0C;
-  --rail-tile: #262523;
-  --rail-fg: #A8A29E;
-  --topbar-bg: #0D0D0C;
-  --search-bg: rgba(255, 255, 255, 0.1);
-  --panel-border: #0D0D0C;
+  /* Chrome (rail, top bar, sidebar): a step quieter than the content surface. */
+  --sidebar-bg: #F6F4F2;
+  --sidebar-fg: #5F5854;
+  --sidebar-fg-strong: #1C1917;
+  --sidebar-hover: rgba(28, 25, 23, 0.05);
+  --sidebar-active: rgba(28, 25, 23, 0.09);
+  --rail-bg: #ECE9E6;
+  --rail-tile: #FFFFFF;
+  --rail-fg: #6B6461;
+  --chrome-hover: rgba(28, 25, 23, 0.07);
+  --topbar-bg: #ECE9E6;
+  --search-bg: rgba(28, 25, 23, 0.07);
+  --panel-border: #DDD8D4;
 
   --bg: #FFFFFF;
-  --bg-subtle: #F7F5F4;
+  --bg-subtle: #F8F6F5;
   --bg-hover: #F1EEEC;
+  --bg-active: #EAE6E3;
   --bg-elevated: #FFFFFF;
   --composer-bg: #FFFFFF;
-  --fg: #1C1917;
+  --fg: #292524;
   --fg-strong: #0C0A09;
   --fg-muted: #6B6461;
-  --fg-faint: #9A928E;
-  --border: #E7E3E0;
+  --fg-faint: #8F8783;
+  --border: #E9E5E2;
   --border-strong: #D6D0CC;
   --link: #C2410C;
   --highlight: #FFF1E8;
   --pinned-bg: #FFF6EE;
   --code-bg: #F5F2F0;
-  --code-fg: #C2410C;
-  --shadow: 0 8px 28px rgba(12, 10, 9, 0.16), 0 1px 3px rgba(12, 10, 9, 0.1);
-  --focus: 0 0 0 3px rgba(232, 67, 10, 0.3);
+  --code-fg: #B23C0B;
+  --scrollbar: rgba(28, 25, 23, 0.22);
+  --shadow-sm: 0 1px 2px rgba(12, 10, 9, 0.06);
+  --shadow: 0 12px 32px rgba(12, 10, 9, 0.14), 0 2px 6px rgba(12, 10, 9, 0.08);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(232, 67, 10, 0.55);
+  --focus-field: 0 0 0 3px rgba(232, 67, 10, 0.16);
 
-  --radius: 12px;
-  --radius-sm: 8px;
-  --font: 'Inter', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --radius: 10px;
+  --radius-sm: 7px;
+  --radius-xs: 5px;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, Menlo, monospace;
   color-scheme: light;
 }
@@ -50,41 +61,48 @@
 :root[data-theme='dark'] {
   --brand: #FA4C0D;
   --brand-strong: #FF6328;
-  --brand-soft: #3A1E12;
+  --brand-soft: #33190F;
+  --on-brand: #FFFFFF;
   --accent: #F2A541;
   --accent-soft: #3A2E1A;
   --mention: #E8675D;
-  --mention-soft: #44231F;
+  --mention-soft: #3D211E;
+  --success: #5DBB63;
 
-  --sidebar-bg: #141413;
-  --sidebar-fg: #B4AEAA;
-  --sidebar-fg-strong: #FAF7F5;
+  --sidebar-bg: #151514;
+  --sidebar-fg: #A9A29D;
+  --sidebar-fg-strong: #F5F2F0;
   --sidebar-hover: rgba(255, 255, 255, 0.05);
-  --sidebar-active: rgba(250, 76, 13, 0.18);
-  --rail-bg: #0D0D0C;
-  --rail-tile: #262523;
-  --rail-fg: #A8A29E;
-  --topbar-bg: #0D0D0C;
-  --search-bg: #1F1E1C;
-  --panel-border: #232220;
+  --sidebar-active: rgba(255, 255, 255, 0.09);
+  --rail-bg: #0E0E0D;
+  --rail-tile: #232220;
+  --rail-fg: #9C9591;
+  --chrome-hover: rgba(255, 255, 255, 0.08);
+  --topbar-bg: #0E0E0D;
+  --search-bg: #1D1C1A;
+  --panel-border: #222120;
 
   --bg: #121212;
-  --bg-subtle: #161615;
+  --bg-subtle: #171716;
   --bg-hover: #1E1D1B;
-  --bg-elevated: #1A1A17;
-  --composer-bg: #1A1A17;
-  --fg: #E9E4E1;
-  --fg-strong: #FAF7F5;
-  --fg-muted: #A8A29E;
-  --fg-faint: #78716C;
-  --border: #262523;
-  --border-strong: #36332F;
+  --bg-active: #272523;
+  --bg-elevated: #1B1B19;
+  --composer-bg: #181817;
+  --fg: #E4DFDC;
+  --fg-strong: #F7F4F2;
+  --fg-muted: #A49D99;
+  --fg-faint: #7D7671;
+  --border: #252422;
+  --border-strong: #34322F;
   --link: #FF7A45;
   --highlight: #2A1C14;
-  --pinned-bg: #241A12;
-  --code-bg: #1A1A17;
+  --pinned-bg: #211910;
+  --code-bg: #1B1B19;
   --code-fg: #FF8A5B;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.4);
-  --focus: 0 0 0 3px rgba(250, 76, 13, 0.35);
+  --scrollbar: rgba(255, 255, 255, 0.16);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 14px 36px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px rgba(250, 76, 13, 0.7);
+  --focus-field: 0 0 0 3px rgba(250, 76, 13, 0.2);
   color-scheme: dark;
 }
