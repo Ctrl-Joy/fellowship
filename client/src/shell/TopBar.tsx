@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useDismiss } from '../components/useDismiss';
 import { useNavigate } from 'react-router';
 import type { User, Workspace } from '../types';
 import { useUi } from '../store/ui';
@@ -17,6 +18,8 @@ export function TopBar({ workspace, onMenu }: { workspace: Workspace; currentUse
   const navigate = useNavigate();
   const openModal = useUi((s) => s.openModal);
   const [help, setHelp] = useState(false);
+  const closeHelp = useCallback(() => setHelp(false), []);
+  useDismiss(help, closeHelp);
 
   return (
     <header className="topbar">
@@ -34,7 +37,7 @@ export function TopBar({ workspace, onMenu }: { workspace: Workspace; currentUse
       <div className="topbar-right me-menu">
         <button className="icon-btn" title="Help" onClick={() => setHelp((v) => !v)}><Icon name="help" /></button>
         {help && (
-          <div className="menu menu-right" onMouseLeave={() => setHelp(false)}>
+          <div className="menu menu-right">
             <div className="menu-note"><strong>Keyboard shortcuts</strong></div>
             {SHORTCUTS.map(([k, d]) => (
               <div key={k} className="shortcut-row"><span>{d}</span><kbd>{k}</kbd></div>

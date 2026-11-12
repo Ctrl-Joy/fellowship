@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { askConfirm, askText } from '../../components/Dialogs';
 import { projectsApi } from './api';
 import { useProjects } from './store';
 import type { ItemQuery, SavedFilter, WorkItem } from './types';
@@ -97,7 +98,7 @@ export default function FiltersPage({ workspaceId, currentUser }: ProjectsViewPr
   };
 
   const saveCurrent = async () => {
-    const name = window.prompt('Name this filter')?.trim();
+    const name = await askText('Name this filter', { label: 'Filter name' });
     if (!name) return;
     setSavedError(null);
     try {
@@ -110,7 +111,7 @@ export default function FiltersPage({ workspaceId, currentUser }: ProjectsViewPr
   };
 
   const removeSaved = async (f: SavedFilter) => {
-    if (!window.confirm(`Delete the saved filter "${f.name}"?`)) return;
+    if (!await askConfirm(`Delete the saved filter “${f.name}”?`, { danger: true, action: 'Delete' })) return;
     setSavedError(null);
     try {
       await projectsApi.deleteFilter(f.id);

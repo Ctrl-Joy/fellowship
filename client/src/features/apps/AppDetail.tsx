@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { ApiError } from '../../api';
 import { Icon } from '../../components/Icon';
 import { formatFull, timeAgo } from '../../lib/time';
@@ -116,7 +117,7 @@ function TokenTab({ workspaceId, app, onChanged, onDeleted }: {
   const base = `${window.location.origin}/api/bot`;
 
   async function rotate() {
-    if (!confirm('Generate a new token? The current token stops working immediately.')) return;
+    if (!await askConfirm('Generate a new token?', { body: 'The current token stops working immediately.', action: 'Generate' })) return;
     setBusy(true); setError(null);
     try {
       const r = await appsApi.rotateToken(workspaceId, app.id, info?.scopes ?? APP_SCOPES.map((s) => s.id));
@@ -135,7 +136,7 @@ function TokenTab({ workspaceId, app, onChanged, onDeleted }: {
   }
 
   async function remove() {
-    if (!confirm(`Delete ${app.name}? Its token, webhooks and commands stop working. Past messages stay in place.`)) return;
+    if (!await askConfirm(`Delete ${app.name}?`, { body: 'Its token, webhooks and commands stop working. Past messages stay in place.', danger: true, action: 'Delete' })) return;
     setBusy(true); setError(null);
     try { await appsApi.remove(workspaceId, app.id); onDeleted(); } catch (e: any) { setError(e.message); setBusy(false); }
   }
@@ -222,7 +223,7 @@ function WebhooksTab({ workspaceId, app, onChanged }: { workspaceId: string; app
   }
 
   async function remove(id: string) {
-    if (!confirm('Delete this webhook URL? Anything posting to it will fail.')) return;
+    if (!await askConfirm('Delete this webhook URL?', { body: 'Anything posting to it will fail.', danger: true, action: 'Delete' })) return;
     setBusy(true); setError(null);
     try { await appsApi.removeWebhook(workspaceId, app.id, id); onChanged(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   }

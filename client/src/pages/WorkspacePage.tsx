@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { DialogHost } from '../components/Dialogs';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { useSession } from '../store/session';
 import { useConversations } from '../store/conversations';
@@ -15,15 +16,17 @@ import { RightPanel } from '../shell/RightPanel';
 import { ChannelBrowser } from '../shell/ChannelBrowser';
 import { SavedView } from '../shell/SavedView';
 import { Modals } from '../shell/Modals';
-import ThreadsView from '../features/threads/ThreadsView';
-import ActivityView from '../features/notifications/ActivityView';
-import AppsView from '../features/apps/AppsView';
-import WorkflowsView from '../features/workflows/WorkflowsView';
-import CanvasesPage from '../features/canvases/CanvasesPage';
-import SearchResults from '../features/search/SearchResults';
-import HuddleWindow from '../features/huddles/HuddleWindow';
-import ProjectsRoot from '../features/projects/ProjectsRoot';
 import ProjectToasts from '../features/projects/ProjectToasts';
+
+// Sections other than the conversation load when first opened.
+const ThreadsView = lazy(() => import('../features/threads/ThreadsView'));
+const ActivityView = lazy(() => import('../features/notifications/ActivityView'));
+const AppsView = lazy(() => import('../features/apps/AppsView'));
+const WorkflowsView = lazy(() => import('../features/workflows/WorkflowsView'));
+const CanvasesPage = lazy(() => import('../features/canvases/CanvasesPage'));
+const SearchResults = lazy(() => import('../features/search/SearchResults'));
+const HuddleWindow = lazy(() => import('../features/huddles/HuddleWindow'));
+const ProjectsRoot = lazy(() => import('../features/projects/ProjectsRoot'));
 
 /** The signed-in app shell for /w/:wid/*. */
 export function WorkspacePage() {
@@ -37,6 +40,15 @@ export function WorkspacePage() {
   const [navOpen, setNavOpen] = useState(false);
   const { pathname } = useLocation();
   useEffect(() => { setNavOpen(false); }, [pathname]);
+  // Phone drawer: choosing any destination closes it, including the one already open.
+  useEffect(() => {
+    if (!navOpen) return;
+    const onClick = (e: MouseEvent) => { if ((e.target as Element | null)?.closest?.('.sb-item, .rail-btn')) setNavOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setNavOpen(false); };
+    document.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); };
+  }, [navOpen]);
   const rightPanel = useUi((s) => s.rightPanel);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -93,6 +105,7 @@ export function WorkspacePage() {
       <div className="nav-scrim" aria-hidden="true" onClick={() => setNavOpen(false)} />
       <Sidebar workspace={workspace} currentUser={me} />
       <main className="main">
+        <Suspense fallback={<div className="center-page"><span className="spinner spinner-lg" /></div>}>
         <Routes>
           <Route index element={<DefaultConversation workspaceId={wid} />} />
           <Route path="c/:cid" element={<ConversationView workspaceId={wid} currentUser={me} />} />
@@ -107,10 +120,12 @@ export function WorkspacePage() {
           <Route path="projects/*" element={<ProjectsRoot workspaceId={wid} currentUser={me} />} />
           <Route path="*" element={<Navigate to={`/w/${wid}`} replace />} />
         </Routes>
+        </Suspense>
       </main>
       {rightPanel && <div className="right"><RightPanel workspaceId={wid} currentUser={me} /></div>}
       <Modals workspaceId={wid} currentUser={me} />
-      <HuddleWindow workspaceId={wid} currentUser={me} />
+      <DialogHost />
+      <Suspense fallback={null}><HuddleWindow workspaceId={wid} currentUser={me} /></Suspense>
       <ProjectToasts />
     </div>
   );

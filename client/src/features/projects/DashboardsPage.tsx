@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { Link, useNavigate, useParams } from 'react-router';
 import { api } from '../../api';
 import { Icon } from '../../components/Icon';
@@ -67,7 +68,7 @@ function DashboardList({ workspaceId, currentUserId }: { workspaceId: string; cu
     } catch (e) { setError(errMsg(e)); setBusy(false); }
   };
   const remove = async (d: Dashboard) => {
-    if (!window.confirm(`Delete the dashboard "${d.name}"? This can't be undone.`)) return;
+    if (!await askConfirm(`Delete the dashboard “${d.name}”?`, { body: 'This can’t be undone.', danger: true, action: 'Delete' })) return;
     try {
       await projectsApi.deleteDashboard(d.id);
       setList((l) => (l ?? []).filter((x) => x.id !== d.id));

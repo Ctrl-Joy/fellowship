@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { useConversations } from '../../store/conversations';
 import { formatFull } from '../../lib/time';
 import {
@@ -112,7 +113,7 @@ export function WorkflowEditor({ id, onBack }: { id: string; onBack(): void }) {
     setTab('runs');
   }, 'Test run started.');
   const remove = async () => {
-    if (!confirm(`Delete “${wf.name}”? Its run history is removed too.`)) return;
+    if (!await askConfirm(`Delete “${wf.name}”?`, { body: 'Its run history is removed too.', danger: true, action: 'Delete' })) return;
     try { await wfApi.remove(wf.id); onBack(); } catch (e: any) { setError(e.message); }
   };
 

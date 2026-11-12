@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useDismiss } from '../components/useDismiss';
 import { useLocation, useNavigate } from 'react-router';
 import type { User } from '../types';
 import { useSession } from '../store/session';
@@ -16,6 +17,8 @@ export function WorkspaceRail({ currentUser }: { currentUser: User }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [menu, setMenu] = useState(false);
+  const closeMenu = useCallback(() => setMenu(false), []);
+  useDismiss(menu, closeMenu);
   const base = `/w/${current}`;
 
   const dest = [
@@ -59,7 +62,7 @@ export function WorkspaceRail({ currentUser }: { currentUser: User }) {
             <span className="avatar-wrap"><Avatar user={currentUser} size={40} /><PresenceDot userId={currentUser.id} size={11} /></span>
           </button>
           {menu && (
-            <div className="menu menu-up" onMouseLeave={() => setMenu(false)}>
+            <div className="menu menu-up">
               <div className="menu-user">
                 <Avatar user={currentUser} size={36} />
                 <div>

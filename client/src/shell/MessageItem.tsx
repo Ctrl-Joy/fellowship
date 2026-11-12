@@ -1,4 +1,6 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { askConfirm, tell } from '../components/Dialogs';
+import { useDismiss } from '../components/useDismiss';
 import type { Conversation, Message, User } from '../types';
 import { useSession, displayName } from '../store/session';
 import { useMessages } from '../store/messages';
@@ -37,6 +39,15 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
   const openPanel = useUi((s) => s.openRightPanel);
   // Where the toolbar emoji picker opens (fixed position), or null when closed.
   const [picker, setPicker] = useState<{ x: number; y: number; below: boolean } | null>(null);
+  // Touch screens have no hover: a tap on the message shows its actions, a tap elsewhere hides them.
+  const [tapped, setTapped] = useState(false);
+  const untap = useCallback(() => setTapped(false), []);
+  useDismiss(tapped, untap, `[data-mid="${m.id}"]`);
+  const onTap = (e: React.MouseEvent) => {
+    if (!window.matchMedia('(hover: none)').matches) return;
+    if ((e.target as Element).closest('a, button, input, textarea, select, [role="button"]')) return;
+    setTapped((v) => !v);
+  };
   const mine = m.userId === currentUser.id;
   const isAdmin = myRole === 'owner' || myRole === 'admin';
   const temp = m.id.startsWith('tmp_');
@@ -57,7 +68,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
   const openThread = () => openPanel({ kind: 'thread', conversationId: conversation.id, rootId: m.threadRootId ?? m.id });
 
   return (
-    <div className={`msg${showHeader ? ' msg-head' : ''}${m.pending ? ' msg-pending' : ''}${m.failed ? ' msg-failed' : ''}${m.pinned ? ' msg-pinned' : ''}${editing ? ' msg-editing' : ''}`} data-mid={m.id}>
+    <div className={`msg${showHeader ? ' msg-head' : ''}${m.pending ? ' msg-pending' : ''}${m.failed ? ' msg-failed' : ''}${m.pinned ? ' msg-pinned' : ''}${editing ? ' msg-editing' : ''}`} data-mid={m.id} onClick={onTap}>
       {m.pinned && <div className="msg-pinned-label"><Icon name="pin" size={12} /> Pinned</div>}
       {m.subtype === 'thread_broadcast' && !inThread && (
         <button className="msg-broadcast-label" onClick={openThread}>replied to a thread</button>
@@ -65,7 +76,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
       <div className="msg-row">
         <div className="msg-gutter">
           {showHeader
-            ? <button className="avatar-btn" onClick={() => openPanel({ kind: 'profile', userId: m.userId })}><Avatar userId={m.userId} size={36} /></button>
+            ? <button className="avatar-btn" aria-label={`Open ${author ? displayName(author) : 'member'}’s profile`} onClick={() => openPanel({ kind: 'profile', userId: m.userId })}><Avatar userId={m.userId} size={36} /></button>
             : <span className="msg-hover-time" title={formatFull(m.createdAt)}>{formatTime(m.createdAt)}</span>}
         </div>
         <div className="msg-main">
@@ -101,7 +112,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
       </div>
 
       {!temp && !editing && (
-        <div className={`msg-toolbar${picker ? ' open' : ''}`} role="toolbar">
+        <div className={`msg-toolbar${picker || tapped ? ' open' : ''}`} role="toolbar">
           <button className="icon-btn" title="Add reaction" data-emoji-trigger onClick={(e) => {
             if (picker) { setPicker(null); return; }
             const r = e.currentTarget.getBoundingClientRect();
@@ -115,7 +126,7 @@ export const MessageItem = memo(function MessageItem({ message: m, conversation,
           {conversation.isMember && <button className={`icon-btn${m.pinned ? ' active' : ''}`} title={m.pinned ? 'Unpin' : 'Pin to conversation'} onClick={() => togglePin(m)}><Icon name="pin" size={16} /></button>}
           {mine && <button className="icon-btn" title="Edit" onClick={() => useMessages.getState().setEditing(m.id)}><Icon name="edit" size={16} /></button>}
           {(mine || isAdmin) && (
-            <button className="icon-btn danger" title="Delete" onClick={() => { if (confirm('Delete this message? This can’t be undone.')) deleteMessage(m.id); }}>
+            <button className="icon-btn danger" title="Delete" onClick={async () => { if (await askConfirm('Delete this message?', { body: 'This can’t be undone.', danger: true, action: 'Delete' })) deleteMessage(m.id); }}>
               <Icon name="trash" size={16} />
             </button>
           )}
@@ -159,7 +170,7 @@ function InlineEditor({ message }: { message: Message }) {
       await editMessage(message.id, encodeMentions(text, members, Object.values(conversations)));
       cancel();
     } catch (e: any) {
-      alert(e.message);
+      void tell('Could not save your edit', e.message);
     } finally {
       setBusy(false);
     }

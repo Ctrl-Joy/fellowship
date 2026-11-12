@@ -5,6 +5,13 @@ import { Icon } from '../../components/Icon';
 import { formatBytes } from './useUpload';
 import './files.css';
 
+/** Reserve the thumbnail's final size before it loads, so messages below it do not jump. */
+function thumbBox(f: { width?: number | null; height?: number | null }): React.CSSProperties | undefined {
+  if (!f.width || !f.height) return undefined;
+  const k = Math.min(360 / f.width, 240 / f.height, 1);
+  return { width: Math.round(f.width * k), aspectRatio: `${f.width} / ${f.height}` };
+}
+
 export interface AttachmentsProps {
   message: Message;
   files: FileInfo[];
@@ -47,7 +54,7 @@ export default function Attachments({ files }: AttachmentsProps) {
         <div className="att-images">
           {images.map((f) => (
             <button key={f.id} className="att-thumb" onClick={() => setOpen(f)} title={`${f.name} (${formatBytes(f.size)})`}>
-              <img src={f.thumbUrl ?? f.url} alt={f.name} loading="lazy" />
+              <img src={f.thumbUrl ?? f.url} alt={f.name} loading="lazy" decoding="async" width={f.width ?? undefined} height={f.height ?? undefined} style={thumbBox(f)} />
             </button>
           ))}
         </div>

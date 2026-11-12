@@ -64,7 +64,12 @@ function applyFormat(text: string, start: number, end: number, f: Format): { tex
 }
 
 function loadToolbarPref(): boolean {
-  try { return localStorage.getItem('fs:composerToolbar') !== '0'; } catch { return true; }
+  try {
+    const saved = localStorage.getItem('fs:composerToolbar');
+    // On phones the formatting row starts hidden so the composer stays compact; the Aa button brings it back.
+    if (saved === null) return !window.matchMedia('(max-width: 760px)').matches;
+    return saved !== '0';
+  } catch { return true; }
 }
 
 export function Composer({ conversation, threadRootId = null, placeholder }: ComposerProps) {

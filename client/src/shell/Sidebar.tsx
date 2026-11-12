@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useDismiss } from '../components/useDismiss';
 import { NavLink, useNavigate } from 'react-router';
 import type { Conversation, User, Workspace } from '../types';
 import { useConversations, conversationTitle, dmPartnerId } from '../store/conversations';
@@ -29,6 +30,8 @@ export function Sidebar({ workspace, currentUser }: { workspace: Workspace; curr
   const [collapsed, setCollapsed] = useState(loadCollapsed);
   const [menu, setMenu] = useState<'channels' | 'workspace' | null>(null);
   const [query, setQuery] = useState('');
+  const closeMenu = useCallback(() => setMenu(null), []);
+  useDismiss(menu !== null, closeMenu);
 
   const toggle = (k: string) => setCollapsed((c) => {
     const next = { ...c, [k]: !c[k] };
@@ -82,7 +85,7 @@ export function Sidebar({ workspace, currentUser }: { workspace: Workspace; curr
           <button className="sb-head-btn" title="New message" onClick={() => openModal({ kind: 'newMessage' })}><Icon name="compose" size={18} /></button>
         </div>
         {menu === 'workspace' && mode === 'home' && (
-          <div className="menu" onMouseLeave={() => setMenu(null)}>
+          <div className="menu">
             <div className="menu-note">
               Invite people with this link:
               <code className="invite">{`${location.origin}/join/${workspace.inviteCode}`}</code>
@@ -118,7 +121,7 @@ export function Sidebar({ workspace, currentUser }: { workspace: Workspace; curr
             <Section title="Channels" icon="hash" open={!collapsed.channels} onToggle={() => toggle('channels')}
               onAdd={() => setMenu(menu === 'channels' ? null : 'channels')} addLabel="Add channels">
               {menu === 'channels' && (
-                <div className="menu menu-inline" onMouseLeave={() => setMenu(null)}>
+                <div className="menu menu-inline">
                   <button onClick={() => { openModal({ kind: 'createChannel' }); setMenu(null); }}>Create a new channel</button>
                   <button onClick={() => { navigate(`${base}/browse`); setMenu(null); }}>Browse channels</button>
                 </div>

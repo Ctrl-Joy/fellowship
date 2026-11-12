@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { useNavigate } from 'react-router';
 import type { Conversation, User } from '../../types';
 import { api, ApiError } from '../../api';
@@ -70,7 +71,7 @@ export default function FilesTab({ workspaceId, conversation, currentUser }: Fil
   }, [cid, load]);
 
   async function remove(f: FileDto) {
-    if (!window.confirm(`Delete “${f.name}”? It will disappear from the message too.`)) return;
+    if (!await askConfirm(`Delete “${f.name}”?`, { body: 'It will disappear from the message too.', danger: true, action: 'Delete' })) return;
     try {
       await api.del(`/api/files/${f.id}`);
       setFiles((xs) => (xs ?? []).filter((x) => x.id !== f.id));

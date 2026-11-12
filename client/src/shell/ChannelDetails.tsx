@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { askConfirm } from '../components/Dialogs';
 import { useNavigate } from 'react-router';
 import type { Conversation, User } from '../types';
 import { api } from '../api';
@@ -144,7 +145,7 @@ export function ChannelDetails({ workspaceId, conversation: c, currentUser, init
             )}
             {!c.isDefault && c.isMember && (
               <button className="btn btn-danger-ghost" onClick={() => run(async () => {
-                if (!c.isArchived && !confirm(`Archive #${c.name}? No one will be able to post in it.`)) return;
+                if (!c.isArchived && !await askConfirm(`Archive #${c.name}?`, { body: 'No one will be able to post in it.', action: 'Archive' })) return;
                 const r = await api.post<{ conversation: Conversation }>(`/api/conversations/${c.id}/archive`, { archived: !c.isArchived });
                 useConversations.getState().upsert(r.conversation);
               })}>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { Link } from 'react-router';
 import { projectsApi } from './api';
 import { useProjects } from './store';
@@ -49,7 +50,7 @@ export default function FormsTab({ workspaceId, project }: TabProps) {
   };
 
   const remove = async (f: ProjectForm) => {
-    if (!window.confirm(`Delete the form "${f.name}"? Work items it already created are kept.`)) return;
+    if (!await askConfirm(`Delete the form “${f.name}”?`, { body: 'Work items it already created are kept.', danger: true, action: 'Delete' })) return;
     setRowError(null);
     try {
       await projectsApi.deleteForm(f.id);

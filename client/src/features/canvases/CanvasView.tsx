@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { askConfirm } from '../../components/Dialogs';
 import { useNavigate } from 'react-router';
+import { useDismiss } from '../../components/useDismiss';
 import type { Conversation, User } from '../../types';
 import { api } from '../../api';
 import { ws } from '../../ws';
@@ -60,6 +62,8 @@ function CanvasEditor({ initial, workspaceId, conversation, currentUser, onDelet
   const [notice, setNotice] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useDismiss(menuOpen, closeMenu);
   const members = useSession((s) => s.members);
   const membersRef = useRef(members);
   membersRef.current = members;
@@ -197,7 +201,7 @@ function CanvasEditor({ initial, workspaceId, conversation, currentUser, onDelet
         <div className="cv-menu-anchor">
           <button className="icon-btn" title="More" onClick={() => setMenuOpen((v) => !v)}><Icon name="more" /></button>
           {menuOpen && (
-            <div className="menu menu-right" onMouseLeave={() => setMenuOpen(false)}>
+            <div className="menu menu-right">
               <button onClick={() => { navigator.clipboard?.writeText(location.origin + fullPage); setMenuOpen(false); setNotice('Link copied'); }}>Copy link</button>
               {conversation && <button onClick={() => navigate(fullPage)}>Open as a page</button>}
               {canEdit && !isChannelCanvas && (
@@ -211,7 +215,7 @@ function CanvasEditor({ initial, workspaceId, conversation, currentUser, onDelet
               {access.canManage && !isChannelCanvas && (
                 <button onClick={async () => {
                   setMenuOpen(false);
-                  if (!confirm('Delete this canvas for everyone? This can’t be undone.')) return;
+                  if (!await askConfirm('Delete this canvas for everyone?', { body: 'This can’t be undone.', danger: true, action: 'Delete' })) return;
                   await api.del(`/api/canvases/${canvasId}`);
                   navigate(`/w/${workspaceId}/canvases`);
                 }}>Delete canvas</button>

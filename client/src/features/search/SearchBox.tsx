@@ -170,6 +170,7 @@ export default function SearchBox({ workspaceId, workspaceName }: SearchBoxProps
           onKeyDown={onKeyDown}
           placeholder={`Search ${workspaceName}`}
           aria-label="Search"
+          role="combobox"
           aria-autocomplete="list"
           aria-expanded={menuOpen}
           aria-controls="srch-menu"
