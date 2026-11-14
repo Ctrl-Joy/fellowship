@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Source for client/public/og-image.png (1200x630). Not part of the deployed bundle.
+     Render: chrome --headless=new --screenshot=og.png --window-size=1200,630 --hide-scrollbars --force-device-scale-factor=1 --virtual-time-budget=5000 file:///.../scripts/og/card.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Inter+Tight:wght@700;800&display=block">
+<style>
+  :root { --bg: #121212; --orange: #FA4C0D; --fg: #F2EEEC; --muted: #A8A29E; --line: rgba(255,255,255,0.08); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: var(--bg); }
+  body { position: relative; font-family: 'Inter', Arial, sans-serif; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  .brand { position: absolute; left: 88px; top: 78px; display: flex; align-items: center; gap: 16px; }
+  .brand .ring { height: 40px; }
+  .brand .word { height: 26px; }
+  h1 { position: absolute; left: 84px; top: 200px; width: 600px;
+       font-family: 'Inter Tight', 'Inter', Arial, sans-serif; font-weight: 800; font-size: 76px; line-height: 0.98; letter-spacing: -0.045em; }
+  h1 em { font-style: normal; color: var(--orange); }
+  p { position: absolute; left: 88px; top: 398px; width: 540px; font-size: 26px; line-height: 1.4; color: var(--muted); }
+  .foot { position: absolute; left: 88px; right: 88px; bottom: 64px; display: flex; justify-content: space-between; align-items: center;
+          font-size: 19px; color: var(--muted); }
+  .foot b { font-weight: 500; color: var(--fg); }
+  .pill { display: inline-flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 999px; background: var(--orange); color: #fff; font-weight: 500; font-size: 19px; }
+  .art { position: absolute; right: 36px; top: 118px; width: 470px; height: 340px; }
+  .art svg { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); overflow: visible; }
+  .art ellipse { fill: none; stroke: rgba(234, 63, 15, 0.7); stroke-width: 1.6; stroke-dasharray: 1 7; stroke-linecap: round; }
+  .art circle { fill: #EA3F0F; }
+  .art img { position: absolute; left: 50%; top: 50%; width: 400px; transform: translate(-50%, -50%); }
+</style>
+</head>
+<body>
+  <div class="brand">
+    <img class="ring" src="../../client/public/brand/fellowship-ring.png" alt="">
+    <img class="word" src="../../client/public/brand/fellowship-wordmark.png" alt="Fellowship">
+  </div>
+  <h1>A home for every <em>community.</em></h1>
+  <p>Channels, threads, huddles and projects in one shared workspace.</p>
+  <div class="art">
+    <svg viewBox="0 0 550 420">
+      <ellipse cx="275" cy="210" rx="268" ry="150" transform="rotate(-8 275 210)"/>
+      <ellipse cx="275" cy="210" rx="230" ry="196" transform="rotate(14 275 210)"/>
+      <circle cx="18" cy="245" r="4"/><circle cx="470" cy="62" r="4"/>
+    </svg>
+    <img src="../../client/public/brand/fellowship-ring.png" alt="">
+  </div>
+  <div class="foot"><span><b>fellowship-hu74.onrender.com</b></span><span class="pill">Start your community</span></div>
+</body>
+</html>
